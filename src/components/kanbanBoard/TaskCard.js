@@ -39,7 +39,7 @@ function TaskCard({heading,type,priority,assignees}) {
         assignees: assignees,
         reporter: {
             name: 'Baby yoda',
-            src: img2
+            userImg: img2
         },
         priority: priority,
         orgEstTime: 4,

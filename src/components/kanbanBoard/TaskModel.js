@@ -1,13 +1,63 @@
-import { Box, HStack, Select, Text, Textarea, VStack, Avatar, Button } from '@chakra-ui/react'
+import { Box, HStack, Text, Textarea, VStack, Avatar, Button, Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { getTypeIcon,getPriorityIcon } from './TaskCard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faClose, faTrashCan } from '@fortawesome/free-solid-svg-icons'
+import { faAngleDown, faBookmark, faBug, faClose, faPlus, faSquareCheck, faTrashCan,faArrowUp,faArrowDown } from '@fortawesome/free-solid-svg-icons'
 import DeletePrompt from '../DeletePrompt'
 import userImg from '../../res/user1.png'
 import ButtonMod from '../ButtonMod'
 import Comment from './Comment'
 import UserCard from './UserCard'
+
+function getIconOption(icon,text,design) {
+    return (
+        <HStack>
+            {icon}
+            <Text
+                textTransform={design.transform}
+                fontSize={'sm'}
+                color={'gray.600'}
+                fontWeight={design.weight}
+                ml={'0.25rem'}
+                whiteSpace={'nowrap'}
+            >
+                {
+                    design.isTop ? `${text}-1186495` : text 
+                }
+            </Text>
+        </HStack>
+    )
+}
+
+function getStatusOptions(text,index) {
+    let bgColor,color
+    if(index === 0) {
+        bgColor = '#dfe1e6'
+        color = 'gray.700'
+    }
+    else if(index === 1) {
+        bgColor = '#0052cc'
+        color = 'white'
+    }
+    else {
+        bgColor = '#0b875b'
+        color = 'white'
+    }
+    return (
+        <Text
+            textTransform={'uppercase'}
+            fontWeight={'bold'}
+            fontSize={'0.70rem'}
+            color={color}
+            backgroundColor={bgColor}
+            px={'0.5rem'}
+            py={'0.25rem'}
+            borderRadius={'0.25rem'}
+        >
+            {text}
+        </Text>
+    )
+}
 
 function TaskModel({task,setModelOpen}) {
     const typeIcon = getTypeIcon(task.type)
@@ -15,6 +65,44 @@ function TaskModel({task,setModelOpen}) {
     const [openDeletePrompt,setOpenDeletePrompt] = useState(false)
     const [Task,setTask] = useState(task)
     const [isCommenting,setIsCommenting] = useState(false)
+    let statusCount = -1
+    const allTypes = [
+        {
+            type: 'task',
+            icon: <FontAwesomeIcon icon={faSquareCheck} color='#4fade6' />
+        },
+        {
+            type: 'bug',
+            icon: <FontAwesomeIcon icon={faBug} color='#e44d42' />
+        },
+        {
+            type: 'story',
+            icon: <FontAwesomeIcon icon={faBookmark} color='#65ba43' />
+        }
+    ]
+    const allStatus = ["backlog","selected for development","in progress","done"]
+    const allPriority = [
+        {
+            type: "highest",
+            icon: <FontAwesomeIcon icon={faArrowUp} color='#e60000' />
+        },
+        {
+            type: "high",
+            icon: <FontAwesomeIcon icon={faArrowUp} color='#f06666' />
+        },
+        {
+            type: "medium",
+            icon: <FontAwesomeIcon icon={faArrowUp} color='#ff9900' />
+        },
+        {
+            type: "low",
+            icon: <FontAwesomeIcon icon={faArrowDown} color='#008a00' />
+        },
+        {
+            type: "lowest",
+            icon: <FontAwesomeIcon icon={faArrowDown} color='#66b966' />
+        }
+    ]
     function handleCloseClick() {
         setModelOpen(false)
     }
@@ -58,66 +146,44 @@ function TaskModel({task,setModelOpen}) {
                 px={'1.75rem'}
                 py={'1.75rem'}
             >
-                <HStack
-                >
-                    <Box
-                        position={'relative'}
-                        width={'5rem'}
-                        color={'black'}
-                        _hover={{
-                            backgroundColor: '#ebecf0'
-                        }}
+                <HStack>
+                    <Menu
+                        borderColor={'red'}
+                        borderStyle={'dashed'}
+                        borderWidth={'1px'}
                     >
-                        <HStack
-                            position={'relative'}
-                            height={'2rem'}
-                            width={'100%'}
-                            alignItems={'center'}
-                            px={'0.5rem'}
+                        <MenuButton
+                            px={'0.75rem'}
                             py={'0.25rem'}
-                        >
-                            {typeIcon}
-                            <Text
-                                textTransform={'uppercase'}
-                                fontSize={'0.8rem'}
-                                fontWeight={'medium'}
-                                color={'gray.600'}
-                            >
-                                {task.type}
-                            </Text>
-                        </HStack>
-                        <Select
-                            position={'absolute'}
-                            icon={'none'}
-                            top={'-0.1rem'}
-                            left={'-0.2rem'}
-                            border={'none'}
-                            height={'2rem'}
-                            _focus ={{
-                                boxShadow: 'none'
+                            borderRadius={'0.15rem'}
+                            _hover={{
+                                backgroundColor: '#ebecf0'
                             }}
                         >
-                            <option selected hidden disabled value='' ></option>
-                            <option value={'bug'} style={{ 
-                                textTransform: 'capitalize',
-                                fontSize: '1rem',
-                                _hover: {
-                                    backgroundColor: '#d8e4fc'
-                                }
-                             }} >
-                                bug
-                            </option>
-                            <option value={'story'} style={{ 
-                                textTransform: 'capitalize',
-                                fontSize: '1rem',
-                                _hover: {
-                                    backgroundColor: '#d8e4fc'
-                                }
-                             }}>
-                                story
-                            </option>
-                        </Select>
-                    </Box>
+                            {getIconOption(typeIcon,Task.type,{transform:'uppercase',weight:'medium',isTop:true})}
+                        </MenuButton>
+                        <MenuList
+                            minWidth={'10rem'}
+                            
+                        >
+                            {
+                                allTypes.map((type)=> {
+                                    if(type.type !== Task.type) {
+                                        return (
+                                            <MenuItem
+                                                _hover={{
+                                                    backgroundColor: '#d8e4fc'
+                                                }}
+                                            >
+                                                {getIconOption(type.icon,type.type,{transform:'capitalize',weight:'',isTop:false})}
+                                            </MenuItem>
+                                        )
+                                    }
+                                    return <></>
+                                })
+                            }
+                        </MenuList>
+                    </Menu>
                     <Box
                         width={'100%'}
                     >
@@ -303,18 +369,47 @@ function TaskModel({task,setModelOpen}) {
                         >
                             status
                         </Text>
-                        <Select
-                            placeholder='backlog'
-                            textTransform={'uppercase'}
-                            fontSize={'0.8rem'}
-                            fontWeight={'medium'}
-                            color={'gray.800'}
-                            backgroundColor={'#ebecf0'}
-                        >
-                            <option>selected for development</option>
-                            <option>in progress</option>
-                            <option>done</option>
-                        </Select>
+                        <Menu>
+                            <MenuButton
+                                fontWeight={'medium'}
+                                color={'gray.700'}
+                                textTransform={'capitalize'}
+                                width={'fit-content'}
+                                height={'2rem'}
+                                px={'0.75rem'}
+                                py={'0.25rem'}
+                                backgroundColor={'#dfe1e6'}
+                                borderRadius={'0.25rem'}
+                                as={Button}
+                                rightIcon={<FontAwesomeIcon icon={faAngleDown} />}
+                                _hover={{
+                                    transform: 'scale(1.05)'
+                                }}
+                            >
+                                {Task.status}
+                            </MenuButton>
+                            <MenuList
+                                minW={'20rem'}
+                            >
+                                {
+                                    allStatus.map((status)=>{
+                                        if(status !== Task.status) {
+                                            statusCount++
+                                            return (
+                                                <MenuItem
+                                                    _hover={{
+                                                        backgroundColor: '#d8e4fc'
+                                                    }}
+                                                >
+                                                    {getStatusOptions(status,statusCount)}
+                                                </MenuItem>
+                                            )
+                                        }
+                                        return <></>
+                                    })
+                                }
+                            </MenuList>
+                        </Menu>
                         <Text
                             textTransform={'uppercase'}
                             fontWeight={'medium'}
@@ -325,17 +420,109 @@ function TaskModel({task,setModelOpen}) {
                             assignees
                         </Text>
                         {
-                            Task.assignees.map((user)=> {
-                                console.log(Task.assignees)
-                                return (
-                                    <Box 
-                                        display={'inline'}
+                            Task.assignees.length > 0 ? (
+                                <Box
+                                    display={'flex'}
+                                    flexWrap={'wrap'}
+                                >
+                                    {
+                                        Task.assignees.map((user)=> {
+                                            return (
+                                                <UserCard user={user} type={'assignee'}/>
+                                            )
+                                        })
+                                    }
+                                    <Box
+                                        display={'flex'}
+                                        flexDirection={'row'}
+                                        ml={'0.5rem'}
+                                        cursor={'pointer'}
+                                        color={'#0052cc'}
+                                        _hover={{
+                                            textDecoration: 'underline'
+                                        }}
+                                        pt={'0.5rem'}
                                     >
-                                        <UserCard user={user}/>
+                                        <FontAwesomeIcon icon={faPlus} size='xs'
+                                            style={{
+                                                marginTop: '0.15rem'
+                                            }}
+                                        />
+                                        <Text
+                                            fontSize={'xs'}
+                                            fontWeight={'bold'}
+                                            whiteSpace={'nowrap'}
+                                            ml={'0.25rem'}
+                                        >
+                                            Add more
+                                        </Text>
                                     </Box>
-                                )
-                            })
+                                </Box>
+                            ) : (
+                                <Button
+                                    backgroundColor={'white'}
+                                    border={'none'}
+                                    fontWeight={'medium'}
+                                    color={'gray.500'}
+                                    fontSize={'0.8rem'}
+                                    height={'auto'}
+                                    float={'left'}
+                                    width={'4.4rem'}
+                                    p={0}
+                                    justifyContent={'left'}
+                                    alignItems={'left'}
+                                    _hover={'none'}
+                                >
+                                    Unassigned
+                                </Button>
+                            )
                         }
+                        <Text
+                            textTransform={'uppercase'}
+                            fontWeight={'medium'}
+                            color={'gray.600'}
+                            mt={'1rem'}
+                            fontSize={'0.85rem'}
+                        >
+                            reporter
+                        </Text>
+                        <UserCard user={Task.reporter}/>
+                        <Text
+                            textTransform={'uppercase'}
+                            fontWeight={'medium'}
+                            color={'gray.600'}
+                            mt={'1rem'}
+                            fontSize={'0.85rem'}
+                        >
+                            priority
+                        </Text>
+                        <Menu>
+                            <MenuButton
+                                width={'fit-content'}
+                                px={'0.5rem'}
+                                py={'0.25rem'}
+                                _hover={{
+                                    backgroundColor: '#ebecf0'
+                                }}
+                            >
+                                {getIconOption(priorityIcon,Task.priority,{transform:'capitalize',weight:'medium',isTop:false})}
+                            </MenuButton>
+                            <MenuList>
+                                {
+                                    allPriority.map((priority)=>{
+                                        return (
+                                            <MenuItem
+                                                _hover={{
+                                                    backgroundColor: '#d8e4fc'
+                                                }}
+                                            >
+                                                {getIconOption(priority.icon,priority.type,{transform:'capitalize',weight:'medium',isTop:false})}
+                                            </MenuItem>
+                                        )
+                                    })
+                                }
+                            </MenuList>
+                        </Menu>
                     </VStack>
                 </HStack>
             </VStack>

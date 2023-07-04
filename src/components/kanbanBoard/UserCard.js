@@ -1,27 +1,35 @@
-import { Avatar, Box, HStack,Text } from '@chakra-ui/react'
+import { Avatar, HStack,Text } from '@chakra-ui/react'
+import { faClose } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 
-function UserCard({user}) {
+function UserCard({user,type}) {
   return (
     <HStack
         ml={'0.2rem'}
-        // display={'inline'}
-        width={'10rem'}
+        width={'fit-content'}
         backgroundColor={'#ebecf0'}
-        p={'0.2rem'}
+        py={'0.4rem'}
+        px={'0.6rem'}
         cursor={'pointer'}
+        borderRadius={'0.3rem'}
+        _hover={{
+          backgroundColor: '#dfe1e6'
+        }}
     >
-        <Avatar src={user.userImg} name={user.name} size={'sm'} />
+        <Avatar src={user.userImg} name={user.name} size={'xs'} />
         <Text
             fontSize={'sm'}
             fontWeight={'medium'}
             textTransform={'capitalize'}
-            ml={'0.25rem'}
+            ml={'0.1rem'}
             color={'gray.700'}
-            // display={'inline'}
         >
             {user.name}
         </Text>
+        {
+          type === 'assignee' ? <FontAwesomeIcon icon={faClose} color='gray' /> : <></>
+        }
     </HStack>
   )
 }

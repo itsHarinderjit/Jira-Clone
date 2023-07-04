@@ -57,10 +57,10 @@ function KBoard() {
       type: `story`,
       priority: 'medium',
       assignees: [
-        {
-          name: 'Name',
-          userImg: img3
-        }
+        // {
+        //   name: 'Name',
+        //   userImg: img3
+        // }
       ]
     },
     {
