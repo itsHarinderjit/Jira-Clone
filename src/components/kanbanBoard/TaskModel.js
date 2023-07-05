@@ -1,4 +1,4 @@
-import { Box, HStack, Text, Textarea, VStack, Avatar, Button, Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react'
+import { Box, HStack, Text, Textarea, VStack, Avatar, Button, Menu, MenuButton, MenuList, MenuItem,Input } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { getTypeIcon,getPriorityIcon } from './TaskCard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -6,8 +6,10 @@ import { faAngleDown, faBookmark, faBug, faClose, faPlus, faSquareCheck, faTrash
 import DeletePrompt from '../DeletePrompt'
 import userImg from '../../res/user1.png'
 import ButtonMod from '../ButtonMod'
-import Comment from './Comment'
-import UserCard from './UserCard'
+import Comment, { getNumberOfDays } from './Comment'
+import UserCard from '../UserCard'
+import TimeTracker from './TimeTracker'
+import TimerPrompt from './TimerPrompt'
 
 function getIconOption(icon,text,design) {
     return (
@@ -60,9 +62,8 @@ function getStatusOptions(text,index) {
 }
 
 function TaskModel({task,setModelOpen}) {
-    const typeIcon = getTypeIcon(task.type)
-    const priorityIcon = getPriorityIcon(task.priority)
     const [openDeletePrompt,setOpenDeletePrompt] = useState(false)
+    const [openTimerPrompt,setOpenTimerPrompt] = useState(false)
     const [Task,setTask] = useState(task)
     const [isCommenting,setIsCommenting] = useState(false)
     let statusCount = -1
@@ -110,13 +111,16 @@ function TaskModel({task,setModelOpen}) {
         setOpenDeletePrompt(true)
     }
     function handleTaskChange(e) {
-        let inputValue = e.target.value
+        const inputValue = e.target.value
         const compId = e.target.id
         const property = compId.replace('TextBox','')
         setTask({...Task,[property]:inputValue})
         const component = document.getElementById(compId)
         component.style.height = 'auto'
         component.style.height = component.scrollHeight + 'px'
+    }
+    function handleMenuClick(property,type) {
+        setTask({...Task,[property]:type})
     }
   return (
     <Box
@@ -160,7 +164,7 @@ function TaskModel({task,setModelOpen}) {
                                 backgroundColor: '#ebecf0'
                             }}
                         >
-                            {getIconOption(typeIcon,Task.type,{transform:'uppercase',weight:'medium',isTop:true})}
+                            {getIconOption(getTypeIcon(Task.type),Task.type,{transform:'uppercase',weight:'medium',isTop:true})}
                         </MenuButton>
                         <MenuList
                             minWidth={'10rem'}
@@ -171,6 +175,7 @@ function TaskModel({task,setModelOpen}) {
                                     if(type.type !== Task.type) {
                                         return (
                                             <MenuItem
+                                                onClick={()=>handleMenuClick("type",type.type)}
                                                 _hover={{
                                                     backgroundColor: '#d8e4fc'
                                                 }}
@@ -358,8 +363,9 @@ function TaskModel({task,setModelOpen}) {
                         </Box>
                     </VStack>
                     <VStack
-                        ml={'1.5rem'}
+                        ml={'3rem'}
                         alignItems={'left'}
+                        width={'35%'}
                     >
                         <Text
                             textTransform={'uppercase'}
@@ -397,6 +403,7 @@ function TaskModel({task,setModelOpen}) {
                                             statusCount++
                                             return (
                                                 <MenuItem
+                                                    onClick={()=>handleMenuClick("status",status)}
                                                     _hover={{
                                                         backgroundColor: '#d8e4fc'
                                                     }}
@@ -505,13 +512,14 @@ function TaskModel({task,setModelOpen}) {
                                     backgroundColor: '#ebecf0'
                                 }}
                             >
-                                {getIconOption(priorityIcon,Task.priority,{transform:'capitalize',weight:'medium',isTop:false})}
+                                {getIconOption(getPriorityIcon(Task.priority),Task.priority,{transform:'capitalize',weight:'medium',isTop:false})}
                             </MenuButton>
                             <MenuList>
                                 {
                                     allPriority.map((priority)=>{
                                         return (
                                             <MenuItem
+                                                onClick={()=>handleMenuClick("priority",priority.type)}
                                                 _hover={{
                                                     backgroundColor: '#d8e4fc'
                                                 }}
@@ -523,6 +531,73 @@ function TaskModel({task,setModelOpen}) {
                                 }
                             </MenuList>
                         </Menu>
+                        <Text
+                            textTransform={'uppercase'}
+                            fontWeight={'medium'}
+                            color={'gray.600'}
+                            mt={'1rem'}
+                            fontSize={'0.85rem'}
+                        >
+                            original estimate (hours)
+                        </Text>
+                        <Input
+                            id='orgEstTimeTextBox'
+                            value={Task.orgEstTime}
+                            fontWeight={'medium'}
+                            type='number'
+                            color={'gray.600'}
+                            width={'100%'}
+                            backgroundColor={'#f4f5f7'}
+                            borderColor={'gray.300'}
+                            height={'fit-content'}
+                            py={'0.25rem'}
+                            borderRadius={'0.25rem'}
+                            _focus={{
+                                backgroundColor: 'white'
+                            }}
+                            onChange={handleTaskChange}
+                        />
+                        <Text
+                            textTransform={'uppercase'}
+                            fontWeight={'medium'}
+                            color={'gray.600'}
+                            mt={'1rem'}
+                            fontSize={'0.85rem'}
+                        >
+                            Time tracking
+                        </Text>
+                        <Box
+                            cursor={'pointer'}
+                            _hover={{
+                                backgroundColor: '#dfe1e6'
+                            }}
+                            onClick={()=>setOpenTimerPrompt(true)}
+                            mb={'0.5rem'}
+                        >
+                            <TimeTracker timeSpent={Task.timeSpent} timeRemaining={Task.orgEstTime} />
+                        </Box>
+                        <Box
+                            width={'100%'}
+                            height={'0.05rem'}
+                            backgroundColor={'gray.300'}
+                            display={'block'}
+                            mb={'0.5rem'}
+                        >
+                        </Box>
+                        <Text
+                            fontSize={'xs'}
+                            color={'gray.600'}
+                            fontWeight={'medium'}
+                        >
+                            {`Created at ${getNumberOfDays(Task.createdOn)} days ago`}
+                        </Text>
+                        <Text
+                            fontSize={'xs'}
+                            color={'gray.600'}
+                            fontWeight={'medium'}
+                        >
+                            {`Updated at ${getNumberOfDays(Task.updatedOn)} days ago`}
+                        </Text>
                     </VStack>
                 </HStack>
             </VStack>
@@ -530,6 +605,9 @@ function TaskModel({task,setModelOpen}) {
     </Box>
     {
         openDeletePrompt && <DeletePrompt type={'issue'} setOpenDeletePrompt={setOpenDeletePrompt} />
+    }
+    {
+        openTimerPrompt && <TimerPrompt setOpenTimerPrompt={setOpenTimerPrompt} Task={Task} handleTaskChange={handleTaskChange} />
     }
     </Box>
   )

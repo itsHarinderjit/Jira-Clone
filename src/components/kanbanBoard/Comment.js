@@ -3,9 +3,10 @@ import React, { useState } from 'react'
 import ButtonMod from '../ButtonMod'
 import DeletePrompt from '../DeletePrompt'
 
-function getNumberOfDays(date) {
+export function getNumberOfDays(date) {
     const newDate = new Date()
-    return parseInt((newDate - date)/(1000*60*60*60*24),10)
+    console.log(newDate.getTime() - date.getTime())
+    return parseInt((newDate.getTime() - date.getTime())/(1000*60*60*24),10)
 }
 
 function Comment({comment}) {

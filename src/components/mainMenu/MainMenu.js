@@ -4,7 +4,7 @@ import img from '../../res/ad.png'
 import MenuButtons from './MenuButtons'
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faClapperboard,faGear,faPlus,faTrashCan } from '@fortawesome/free-solid-svg-icons'
+import { faClapperboard,faGear,faPlus } from '@fortawesome/free-solid-svg-icons'
 
 function MainMenu() {
     const project = {
@@ -13,12 +13,11 @@ function MainMenu() {
         src: img
     }
     const [clickedLink,setClickedLink] = useState('KBoard')
-    const color = 'gray.700'
+    const color = '#5d6064'
     const selectedColor = '#0052cc'
     const boardIcon = <FontAwesomeIcon icon={faClapperboard} size='lg' color={clickedLink === 'KBoard' ? selectedColor : color}/>
     const settingIcon = <FontAwesomeIcon icon={faGear} size='lg' color={clickedLink === 'PSettings' ? selectedColor : color}/>
-    const addIcon = <FontAwesomeIcon icon={faPlus} size='lg' color={clickedLink === 'AMember' ? selectedColor : color}/>
-    const deleteIcon = <FontAwesomeIcon icon={faTrashCan} size='lg' color={clickedLink === 'RMember' ? selectedColor : color}/>
+    const addIcon = <FontAwesomeIcon icon={faPlus} size='lg' color={clickedLink === 'CIssue' ? selectedColor : color}/>
   return (
     <Box
         width={'14rem'}
@@ -65,15 +64,12 @@ function MainMenu() {
             <Link to="/board" onClick={()=>{setClickedLink('KBoard')}}>
                 <MenuButtons heading={'kanban board'} isSelected={clickedLink === 'KBoard'} icon={boardIcon}/>
             </Link>
-            <Link to="/board" onClick={()=>{setClickedLink('PSettings')}}>
+            <Link to="/settings" onClick={()=>{setClickedLink('PSettings')}}>
                 <MenuButtons heading={'project settings'} isSelected={clickedLink === 'PSettings'} icon={settingIcon}/>
             </Link>
             <Divider borderWidth={'1px'} mt={'1rem'} borderColor={'blackAlpha.400'} mb={'1rem'} />
-            <Link to="/board" onClick={()=>{setClickedLink('AMember')}}>
-                <MenuButtons heading={'add member'} isSelected={clickedLink === 'AMember'} icon={addIcon}/>
-            </Link>
-            <Link to="/board" onClick={()=>{setClickedLink('RMember')}}>
-                <MenuButtons heading={'remove member'} isSelected={clickedLink === 'RMember'} icon={deleteIcon}/>
+            <Link to="/board" onClick={()=>{setClickedLink('CIssue')}}>
+                <MenuButtons heading={'Create issue'} isSelected={clickedLink === 'CIssue'} icon={addIcon}/>
             </Link>
         </VStack>
     </Box>

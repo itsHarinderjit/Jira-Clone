@@ -42,20 +42,22 @@ function TaskCard({heading,type,priority,assignees}) {
             userImg: img2
         },
         priority: priority,
-        orgEstTime: 4,
-        createdOn: new Date(),
+        orgEstTime: 5,
+        timeSpent: 1,
+        createdOn: new Date("6/20/2023"),
+        updatedOn: new Date("7/3/2023"),
         comments: [
             {
                 content: 'This is a comment',
                 userName: 'rick sanchez',
                 userImg: img1,
-                createdOn: new Date("2/6/2023")
+                createdOn: new Date("7/1/2023")
             },
             {
                 content: 'My name is Tom Riddle',
                 userName: 'you know who',
                 userImg: img3,
-                createdOn: new Date("3/6/2023")
+                createdOn: new Date("7/3/2023")
             }
         ]
     }
