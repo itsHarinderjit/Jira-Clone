@@ -14,7 +14,7 @@ function TimerPrompt({setOpenTimerPrompt,Task,handleTaskChange}) {
     width={'100%'}
     top={0}
     left={0}
-    zIndex={'101'}
+    zIndex={101}
     >
         <Box
             position={'relative'}

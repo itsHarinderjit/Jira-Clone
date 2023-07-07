@@ -45,30 +45,49 @@ function TimeTracker({timeSpent,timeRemaining}) {
             </Box>
         </Box>
         <HStack>
-            <Text
-                display={'inline'}
-                fontSize={'sm'}
-                whiteSpace={'nowrap'}
-                fontWeight={'medium'}
-                width={'fit-content'}
-            >
-                {`${timeSpent}h logged`}
-            </Text>
-            <Box
-                width={'100%'}               
-            >
-                <Text
-                    display={'inline'}
-                    fontSize={'sm'}
-                    whiteSpace={'nowrap'}
-                    fontWeight={'medium'}
-                    float={'right'}
-                    width={'fit-content'}
-                >
-                    {`${timeRemaining}h estimated`}
-                </Text>
-            </Box>
-        </HStack>
+            {
+                timeSpent == null ? (
+                    <Text
+                        display={'inline'}
+                        fontSize={'sm'}
+                        whiteSpace={'nowrap'}
+                        fontWeight={'medium'}
+                        width={'fit-content'}
+                    >
+                        No time logged
+                    </Text>
+                ) : (
+                    <Text
+                        display={'inline'}
+                        fontSize={'sm'}
+                        whiteSpace={'nowrap'}
+                        fontWeight={'medium'}
+                        width={'fit-content'}
+                    >
+                        {`${timeSpent}h logged`}
+                    </Text>
+                )
+            }
+            {
+                
+                timeRemaining != null && (
+                    <Box
+                        width={'100%'}               
+                    >
+                        <Text
+                            display={'inline'}
+                            fontSize={'sm'}
+                            whiteSpace={'nowrap'}
+                            fontWeight={'medium'}
+                            float={'right'}
+                            width={'fit-content'}
+                        >
+                            {`${timeRemaining}h estimated`}
+                        </Text>
+                    </Box>
+                )
+            }    
+            </HStack>
     </VStack>
 </HStack>
   )

@@ -1,10 +1,21 @@
 import { VStack,Text } from '@chakra-ui/react'
 import React from 'react'
 import TaskCard from './TaskCard'
+import { useDrop } from 'react-dnd'
 
-function TaskList({heading,list,...rest}) {
+function TaskList({heading,list,setList,listNumber,...rest}) {
+    const [,drop] = useDrop({
+        accept: 'taskCard',
+        drop: ()=>({name:listNumber}),
+        collect: (monitor) => ({
+            isOver: monitor.isOver(),
+            canDrop: monitor.canDrop()
+        })
+    })
   return (
     <VStack
+        ref={drop}
+        className='taskList'
         id={`taskList-${heading}`}
         px={'0.25rem'}
         pb={'1.5rem'}
@@ -14,6 +25,7 @@ function TaskList({heading,list,...rest}) {
         backgroundColor={'#f4f5f7'}
         borderRadius={'0.25rem'}
         spacing={1}
+        {...rest}
     >
         <Text
             textTransform={'uppercase'}
@@ -26,8 +38,8 @@ function TaskList({heading,list,...rest}) {
             {heading}
         </Text>
         {
-            list.map((task)=> {
-                return <TaskCard heading={task.heading} type={task.type} priority={task.priority} assignees={task.assignees}/>
+            list[listNumber].map((task)=> {
+                return <TaskCard Task={task} list={list} listNumber={listNumber} setList={setList}/>
             })
         }
     </VStack>

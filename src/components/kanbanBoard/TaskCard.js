@@ -6,6 +6,7 @@ import img2 from '../../res/user2.jpg'
 import img3 from '../../res/user3.jpg'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowDown, faArrowUp, faBookmark, faBug, faSquareCheck } from '@fortawesome/free-solid-svg-icons'
+import { useDrag } from 'react-dnd'
 
 export function getPriorityIcon(priority) {
     if(priority === 'highest')
@@ -27,23 +28,23 @@ export function getTypeIcon(type) {
     return <FontAwesomeIcon icon={faBookmark} color='#65ba43' />
 }
 
-function TaskCard({heading,type,priority,assignees}) {
-    const priorityIcon = getPriorityIcon(priority)
-    const typeIcon = getTypeIcon(type)
+function TaskCard({Task,list,listNumber,setList}) {
+    const priorityIcon = getPriorityIcon(Task.priority)
+    const typeIcon = getTypeIcon(Task.type)
     const [modelOpen,setModelOpen] = useState(false)
     const task = {
-        heading: heading,
+        heading: Task.heading,
         description: `An issue's priority indicates its relative importance. The default priorities are listed below. Both the priorities and their meanings can be customized by your administrator to suit your organization`,
-        type: type,
+        type: Task.type,
         status: 'backlog',
-        assignees: assignees,
+        assignees: Task.assignees,
         reporter: {
             name: 'Baby yoda',
             userImg: img2
         },
-        priority: priority,
-        orgEstTime: 5,
-        timeSpent: 1,
+        priority: Task.priority,
+        orgEstTime: null,
+        timeSpent: null,
         createdOn: new Date("6/20/2023"),
         updatedOn: new Date("7/3/2023"),
         comments: [
@@ -61,12 +62,46 @@ function TaskCard({heading,type,priority,assignees}) {
             }
         ]
     }
+    const [{isDragging},drag] = useDrag(()=> ({
+        type: 'taskCard',
+        end: (item,monitor) => {
+            const dropResult = monitor.getDropResult()
+            if(!dropResult)
+                return
+            let newList = list
+            let deleteArr = newList[listNumber]
+            const ind = deleteArr.indexOf(Task)
+            deleteArr.splice(ind,1)
+            newList[dropResult.name].push(Task)
+            newList[listNumber] = deleteArr
+            setList(newList)
+            const taskLists = document.getElementsByClassName('taskList')
+            let height=0,rowHeight=0;
+            for(let x in list) {
+                rowHeight = 0
+                for(let y in list[x]) {
+                    rowHeight += (list[x][y].heading.split(' ').length / 5)*(0.75)
+                }
+                if(height < rowHeight + 2.1 + (6.5*list[x].length))
+                    height = rowHeight + 2.1 + (6.5*list[x].length)
+            }
+            for(let x=0; x<4; x++) {
+                taskLists[x].style.height = height + 'rem'
+            }
+        },
+        collect: monitor => ({
+            isDragging: monitor.isDragging()
+        }),
+    }))
+    const display = isDragging ? 'none' : 'block'
   return (
     <>
         <Box
+            ref={drag}
             backgroundColor={'white'}
             borderRadius={'0.25rem'}
             cursor={'pointer'}
+            display={display}
             boxShadow={'0.1rem 0.1rem 0.2rem #D3D3D3'}
             zIndex={2}
             transition={'ease'}
@@ -84,7 +119,7 @@ function TaskCard({heading,type,priority,assignees}) {
                     fontSize={'sm'}
                     fontWeight={500}
                 >
-                    {heading}
+                    {Task.heading}
                 </Text>
                 <HStack
                     py={'0.5rem'}
@@ -99,7 +134,7 @@ function TaskCard({heading,type,priority,assignees}) {
                         position={'relative'}
                     >
                         {
-                            assignees.map((user)=> {
+                            Task.assignees.map((user)=> {
                                 return <Avatar src={user.userImg} name={user.name} boxSize={'1.75rem'} />
                             })
                         }

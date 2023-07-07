@@ -5,7 +5,6 @@ import DeletePrompt from '../DeletePrompt'
 
 export function getNumberOfDays(date) {
     const newDate = new Date()
-    console.log(newDate.getTime() - date.getTime())
     return parseInt((newDate.getTime() - date.getTime())/(1000*60*60*24),10)
 }
 

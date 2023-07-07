@@ -68,7 +68,7 @@ function MainMenu() {
                 <MenuButtons heading={'project settings'} isSelected={clickedLink === 'PSettings'} icon={settingIcon}/>
             </Link>
             <Divider borderWidth={'1px'} mt={'1rem'} borderColor={'blackAlpha.400'} mb={'1rem'} />
-            <Link to="/board" onClick={()=>{setClickedLink('CIssue')}}>
+            <Link to="/createIssue" onClick={()=>{setClickedLink('CIssue')}}>
                 <MenuButtons heading={'Create issue'} isSelected={clickedLink === 'CIssue'} icon={addIcon}/>
             </Link>
         </VStack>

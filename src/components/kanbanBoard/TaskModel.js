@@ -11,7 +11,7 @@ import UserCard from '../UserCard'
 import TimeTracker from './TimeTracker'
 import TimerPrompt from './TimerPrompt'
 
-function getIconOption(icon,text,design) {
+export function getIconOption(icon,text,design) {
     return (
         <HStack>
             {icon}
@@ -124,12 +124,12 @@ function TaskModel({task,setModelOpen}) {
     }
   return (
     <Box
-        zIndex={'1000'}
+        zIndex={1000}
     >
         <Box
         height={'100vh'}
         width={'100vw'}
-        zIndex={'100'}
+        zIndex={100}
         position={'fixed'}
         top={0}
         left={0}
@@ -543,6 +543,7 @@ function TaskModel({task,setModelOpen}) {
                         <Input
                             id='orgEstTimeTextBox'
                             value={Task.orgEstTime}
+                            placeholder='Number'
                             fontWeight={'medium'}
                             type='number'
                             color={'gray.600'}

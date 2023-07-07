@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {Avatar, Box, HStack, Img, Link, VStack, Text, Divider} from '@chakra-ui/react'
 import logo from '../../res/logo.svg'
 import MenuButtons from './MenuButtons'
@@ -7,6 +7,7 @@ import img1 from '../../res/jira-rice.jpg'
 import img2 from '../../res/todo.png'
 import img3 from '../../res/ad.png'
 import user from '../../res/user1.png'
+import CreateProject from './CreateProject'
 
 function SideMenu() {
   const projects = [
@@ -23,8 +24,12 @@ function SideMenu() {
       src: img3
     }
   ]
+  const [openProjectModel,setOpenProjectModel] = useState(false)
   return (
     <Box
+      zIndex={10}
+    >
+      <Box
       width='65px'
       height='100vh'
       pr={'auto'}
@@ -36,8 +41,7 @@ function SideMenu() {
       transitionTimingFunction={'linear'}
       _hover={{ width:'200px' }}
       color={'whiteAlpha.900'}
-      zIndex={'1'}
-      // position={'relative'}
+      zIndex={1}
     >
         <VStack
           ml={'0'}
@@ -83,11 +87,15 @@ function SideMenu() {
             projects.length > 0 && <Divider/>
           }
 
-          <MenuButtons usedfor={'add'}/>
+          <MenuButtons usedfor={'add'} onClick={()=>setOpenProjectModel(true)} />
 
           <MenuButtons usedfor={'logOut'}/>
 
         </VStack>
+    </Box>
+    {
+      openProjectModel && <CreateProject setOpenProjectModel={setOpenProjectModel} />
+    }
     </Box>
   )
 }

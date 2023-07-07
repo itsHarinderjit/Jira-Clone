@@ -14,6 +14,9 @@ function ButtonMod({type,text,...rest}) {
       _hover={{
         filter: 'brightness(110%)'
       }}
+      _active={{
+        filter: 'brightness(150%)'
+      }}
       {...rest}
     >
         {text}

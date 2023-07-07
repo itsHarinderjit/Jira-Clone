@@ -1,17 +1,18 @@
-import { VStack,Text, Box, FormControl, FormLabel, Input, FormErrorMessage, Textarea, FormHelperText, Menu, MenuButton, MenuList, MenuItem, Button, useToast } from '@chakra-ui/react'
-import { faAngleDown, faPlus } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Box,Text, VStack, FormControl, FormLabel, Input, FormErrorMessage, Textarea, FormHelperText, Menu, MenuButton, Button, MenuList, MenuItem, useToast } from '@chakra-ui/react'
 import React, { useState } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faAngleDown, faPlus } from '@fortawesome/free-solid-svg-icons'
+import UserCard from '../UserCard'
+import ButtonMod from '../ButtonMod'
 import user1 from '../../res/user1.png'
 import user2 from '../../res/user2.jpg'
 import user3 from '../../res/user3.jpg'
-import UserCard from '../UserCard'
-import ButtonMod from '../ButtonMod'
 
-function ProjSettings() {
+function CreateProject({setOpenProjectModel}) {
+    const toast = useToast()
     const [project,setProject] = useState({
-        name: 'Jira-rice 2.0',
-        description: "Plan, track, and manage your agile and software development projects in Jira. Customize your workflow, collaborate, and release great software.",
+        name: ' ',
+        description: "",
         category: "software",
         members: [
             {
@@ -28,7 +29,6 @@ function ProjSettings() {
             }
         ]
     })
-    const toast = useToast()
     const allCategories = ["software","marketing","bussiness"]
     function handleInputChange(e) {
         const componentId = e.target.id
@@ -51,34 +51,36 @@ function ProjSettings() {
     }
   return (
     <Box
-        backgroundColor={'white'}
-        position={'absolute'}
-        left={'18.1rem'} 
-        top={0}
-        pt={'1.5rem'}
-        px={'14rem'}
         height={'100vh'}
-        width={'67.25rem'}
+        width={'100vw'}
+        zIndex={2}
+        position={'fixed'}
+        top={0}
+        left={0}
+        backgroundColor={'rgba(0,0,0,0.5)'}
+        justifyContent={'center'}
+        alignItems={'center'}
         overflow={'auto'}
     >
-        <VStack
-            alignItems={'left'}
-            spacing={0}
+        <Box
+            my={'4rem'}
+            mx={'17rem'}
+            backgroundColor={'white'}
+            borderRadius={'0.25rem'}
+            px={'2rem'}
+            py={'1rem'}
         >
-            <Text
-                fontWeight={500}
-                fontSize={'md'}
-                color={'gray.600'}
-            >
-                Projects &nbsp; / &nbsp; Jira-rice 2.0 &nbsp; / &nbsp; Project Details
-            </Text>
             <Text
                 textTransform={'capitalize'}
                 fontSize={'2xl'}
                 fontWeight={'medium'}
             >
-                project details
+                create project
             </Text>
+            <VStack
+                alignItems={'left'}
+                spacing={0}
+            >
             <FormControl 
                 mt={'2rem'}
                 isInvalid={project.name === ''}
@@ -121,7 +123,7 @@ function ProjSettings() {
                 }
             </FormControl>
             <FormControl
-                mt={'1.5rem'}
+                mt={'2rem'}
             >
                 <FormLabel
                     fontWeight={'medium'}
@@ -157,7 +159,7 @@ function ProjSettings() {
                 fontWeight={'medium'}
                 fontSize={'sm'}
                 color={'gray.600'}
-                mt={'1.5rem'}
+                mt={'2rem'}
                 ml={'0.25rem'}
                 mb={'0.5rem'}
             >
@@ -214,7 +216,7 @@ function ProjSettings() {
                 fontWeight={'medium'}
                 fontSize={'sm'}
                 color={'gray.600'}
-                mt={'1.5rem'}
+                mt={'2rem'}
                 ml={'0.25rem'}
                 mb={'0.5rem'}
             >
@@ -263,22 +265,36 @@ function ProjSettings() {
                 </Box>
             </Box>
             <Box
-                mt='1.5rem'
+                display={'flex'}
+                mt='2rem'
+                mb='1rem'
+            >
+            <Box
                 onClick={()=> {
                     toast({
-                        title: 'Changes saved successfully',
+                        title: 'Project created successfully',
                         status: 'success',
                         duration: 3000,
                         isClosable: true,
                         position: 'top-right'
                     })
+                    setOpenProjectModel(false)
                 }}
             >
-                <ButtonMod type={'primary'} text={'save changes'} width='fit-content'/>
+                <ButtonMod type={'primary'} text={'create project'} width='fit-content'/>
+            </Box>
+            <Box
+                onClick={()=> {
+                    setOpenProjectModel(false)
+                }}
+            >
+                <ButtonMod type={'secondary'} text={'cancel'} width='fit-content'/>
+            </Box>
             </Box>
         </VStack>
+        </Box>
     </Box>
   )
 }
 
-export default ProjSettings
+export default CreateProject

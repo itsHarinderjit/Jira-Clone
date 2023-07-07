@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { AvatarGroup, Box, HStack, Text, VStack } from '@chakra-ui/react'
 import Search from './Search'
 import AvatarButtons from './AvatarButtons'
@@ -9,21 +9,8 @@ import img2 from '../../res/user2.jpg'
 import img3 from '../../res/user3.jpg'
 
 function KBoard() {
-  const members = [
-    {
-      name: 'Rick',
-      imgSrc: img1
-    },
-    {
-      name: 'Baby Yoda',
-      imgSrc: img2
-    },
-    {
-      name: 'Voldamort',
-      imgSrc: img3
-    }
-  ]
-  const lst1 = [
+  const [list,setList] = useState([
+    [
     {
       heading: 'Each issue can be assigned priority from lowest to highest.',
       type: 'task',
@@ -35,8 +22,8 @@ function KBoard() {
         }
       ]
     }
-  ]
-  const lst2 = [
+  ],
+  [
     {
       heading: `Click on an issue to see what's behind it`,
       type: "task",
@@ -57,10 +44,62 @@ function KBoard() {
       type: `story`,
       priority: 'medium',
       assignees: [
-        // {
-        //   name: 'Name',
-        //   userImg: img3
-        // }
+        {
+          name: 'Name',
+          userImg: img3
+        }
+      ]
+    },
+    {
+      heading: 'Fix the payment module',
+      type: 'bug',
+      priority: 'highest',
+      assignees: [
+        {
+          name: 'baby yoda',
+          userImg: img2
+        },
+        {
+          name: 'you know who',
+          userImg: img3
+        }
+      ]
+    }
+  ],
+  [
+    {
+      heading: 'Implementing the drop and drag feature',
+      type: 'task',
+      priority: 'highest',
+      assignees: [
+        {
+          name: 'Rick Sanchez',
+          userImg: img1
+        }
+      ]
+    },
+    {
+      heading: 'Using react-dnd library to accomplish this task',
+      type: 'task',
+      priority: 'highest',
+      assignees: [
+        {
+          name: 'Baby Yoda',
+          userImg: img2
+        }
+      ]
+    }
+  ],
+  [
+    {
+      heading: `This is an issue of type story`,
+      type: `story`,
+      priority: 'medium',
+      assignees: [
+        {
+          name: 'Name',
+          userImg: img3
+        }
       ]
     },
     {
@@ -78,30 +117,42 @@ function KBoard() {
         }
       ]
     },
-    // {
-    //   heading: 'Each issue can be assigned priority from lowest to highest.',
-    //   type: 'task',
-    //   priority: 'highest',
-    //   assignees: [
-    //     {
-    //       name: 'Harinderjit',
-    //       src: img1
-    //     }
-    //   ]
-    // },
-    // {
-    //   heading: 'Each issue can be assigned priority from lowest to highest.',
-    //   type: 'task',
-    //   priority: 'highest',
-    //   assignees: [
-    //     {
-    //       name: 'Harinderjit',
-    //       src: img1
-    //     }
-    //   ]
-    // }
+    {
+      heading: 'Using react-dnd library to accomplish this task',
+      type: 'task',
+      priority: 'highest',
+      assignees: [
+        {
+          name: 'Baby Yoda',
+          userImg: img2
+        }
+      ]
+    }
   ]
-  // const maxi = lst1.length > lst2.length ? lst1.length : lst2.length
+  ])
+  const members = [
+    {
+      name: 'Rick',
+      imgSrc: img1
+    },
+    {
+      name: 'Baby Yoda',
+      imgSrc: img2
+    },
+    {
+      name: 'Voldamort',
+      imgSrc: img3
+    }
+  ]
+  let height=0,rowHeight=0;
+  for(let x in list) {
+    rowHeight = 0
+    for(let y in list[x]) {
+      rowHeight += (list[x][y].heading.split(' ').length / 5)*(0.75)
+    }
+    if(height < rowHeight + 2.1 + (6.5*list[x].length))
+      height = rowHeight + 2.1 + (6.5*list[x].length)
+  }
   return (
     <Box
         backgroundColor={'white'}
@@ -154,10 +205,10 @@ function KBoard() {
             width={'100%'}
             alignItems={'start'}
           >
-            <TaskList heading={'backlog'} list={lst1} />
-            <TaskList heading={'selected for development'} list={lst2} />
-            <TaskList heading={'in progress'} list={lst1} />
-            <TaskList heading={'done'} list={lst2} />
+            <TaskList heading={'backlog'} list={list} setList={setList} listNumber={0} height={`${height}rem`}/>
+            <TaskList heading={'selected for development'} list={list} setList={setList} listNumber={1} height={`${height}rem`} />
+            <TaskList heading={'in progress'} list={list} setList={setList} listNumber={2} height={`${height}rem`} />
+            <TaskList heading={'done'} list={list} setList={setList} listNumber={3} height={`${height}rem`} />
           </HStack>
         </VStack>
     </Box>
