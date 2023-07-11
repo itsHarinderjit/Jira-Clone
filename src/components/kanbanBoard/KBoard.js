@@ -1,149 +1,72 @@
-import React, { useState } from 'react'
+import React, { useReducer, useState } from 'react'
 import { AvatarGroup, Box, HStack, Text, VStack } from '@chakra-ui/react'
 import Search from './Search'
 import AvatarButtons from './AvatarButtons'
 import TopButton from './TopButton'
 import TaskList from './TaskList'
-import img1 from '../../res/user1.png'
-import img2 from '../../res/user2.jpg'
-import img3 from '../../res/user3.jpg'
+import { useSelector } from 'react-redux'
+
 
 function KBoard() {
-  const [list,setList] = useState([
-    [
-    {
-      heading: 'Each issue can be assigned priority from lowest to highest.',
-      type: 'task',
-      priority: 'highest',
-      assignees: [
-        {
-          name: 'Harinderjit',
-          userImg: img1
-        }
-      ]
+  const project = useSelector((state)=>state.data.currProject)
+  const data = project["tasks"]
+  function reducer(state,action) {
+    let currState = JSON.parse(JSON.stringify(state))
+    console.log('inside reducer')
+    switch(action.type) {
+      case 'search' :
+        currState.filters.search = action.value
+      break
+      case 'assignee' :
+        currState.filters.assignees = action.value
+      break
+      default:
     }
-  ],
-  [
-    {
-      heading: `Click on an issue to see what's behind it`,
-      type: "task",
-      priority: 'lowest',
-      assignees: [
-        {
-          name: 'React',
-          userImg: img1
-        },
-        {
-          name: 'Lizard',
-          userImg: img2
+    const value = currState.filters.search
+    const assignees = currState.filters.assignees
+    let tasks = JSON.parse(JSON.stringify(data))
+    let keys = Object.keys(tasks)
+    if(value !== '') {
+      for(let x in keys) {
+        if(!tasks[keys[x]]["heading"].toLowerCase().includes(value)) {
+          delete tasks[keys[x]]
         }
-      ]
-    },
-    {
-      heading: `This is an issue of type story`,
-      type: `story`,
-      priority: 'medium',
-      assignees: [
-        {
-          name: 'Name',
-          userImg: img3
-        }
-      ]
-    },
-    {
-      heading: 'Fix the payment module',
-      type: 'bug',
-      priority: 'highest',
-      assignees: [
-        {
-          name: 'baby yoda',
-          userImg: img2
-        },
-        {
-          name: 'you know who',
-          userImg: img3
-        }
-      ]
+      }
     }
-  ],
-  [
-    {
-      heading: 'Implementing the drop and drag feature',
-      type: 'task',
-      priority: 'highest',
-      assignees: [
-        {
-          name: 'Rick Sanchez',
-          userImg: img1
-        }
-      ]
-    },
-    {
-      heading: 'Using react-dnd library to accomplish this task',
-      type: 'task',
-      priority: 'highest',
-      assignees: [
-        {
-          name: 'Baby Yoda',
-          userImg: img2
-        }
-      ]
+    if(assignees.length > 0) {
+      for(let x in keys) {
+        if(!tasks[keys[x]]["assignees"].some((element)=>{
+          return assignees.includes(element)
+        }))
+          delete tasks[keys[x]]
+      }
     }
-  ],
-  [
-    {
-      heading: `This is an issue of type story`,
-      type: `story`,
-      priority: 'medium',
-      assignees: [
-        {
-          name: 'Name',
-          userImg: img3
-        }
-      ]
+    currState.data = tasks
+    console.log(currState)
+    return currState
+  }
+  const [localState,localDispatch] = useReducer(reducer,{
+    filters: {
+      search: '',
+      assignees: [],
+      onlyMyIssues: false,
+      recentlyUpdated: false
     },
-    {
-      heading: 'Fix the payment module',
-      type: 'bug',
-      priority: 'highest',
-      assignees: [
-        {
-          name: 'baby yoda',
-          userImg: img2
-        },
-        {
-          name: 'you know who',
-          userImg: img3
-        }
-      ]
-    },
-    {
-      heading: 'Using react-dnd library to accomplish this task',
-      type: 'task',
-      priority: 'highest',
-      assignees: [
-        {
-          name: 'Baby Yoda',
-          userImg: img2
-        }
-      ]
-    }
-  ]
-  ])
-  const members = [
-    {
-      name: 'Rick',
-      imgSrc: img1
-    },
-    {
-      name: 'Baby Yoda',
-      imgSrc: img2
-    },
-    {
-      name: 'Voldamort',
-      imgSrc: img3
-    }
-  ]
+    data: data
+  })
+  let tempList={
+    backlog:[],
+    selected:[],
+    [`in progress`]:[],
+    done:[]
+  }
+  const keys = Object.keys(localState.data)
+  for(let x in keys) {
+    const status = data[keys[x]].status
+    tempList[status].push(localState.data[keys[x]])
+  }
+  const [list,setList] = useState([tempList["backlog"],tempList['selected'],tempList['in progress'],tempList['done']])
+  const members = useSelector((state)=>state.data.projectUsers)
   let height=0,rowHeight=0;
   for(let x in list) {
     rowHeight = 0
@@ -174,7 +97,7 @@ function KBoard() {
             fontSize={'md'}
             color={'gray.600'}
           >
-            Projects &nbsp; / &nbsp; Jira-rice 2.0 &nbsp; / &nbsp; Kanban Board
+            Projects &nbsp; / &nbsp; {project.name} &nbsp; / &nbsp; Kanban Board
           </Text>
           <Text
             fontSize={'2xl'}
@@ -187,18 +110,18 @@ function KBoard() {
             mt={'1rem'}
             spacing={0}
           >
-            <Search my={'1rem'} width={'10rem'}/>
+            <Search localState={localState} localDispatch={localDispatch} setList={setList} />
             <AvatarGroup
               mx={'1.5rem'}
             >
               {
                 members.map((member)=>{
-                  return <AvatarButtons member={member}/>
+                  return <AvatarButtons member={member} localState={localState} localDispatch={localDispatch} setList={setList}/>
                 })
               }
             </AvatarGroup>
-            <TopButton heading={'only my issues'} mr={'0.5rem'}/>
-            <TopButton heading={'recently updated'}/>
+            <TopButton heading={'only my issues'} mr={'0.5rem'} localState={localState} localDispatch={localDispatch} setList={setList} />
+            <TopButton heading={'recently updated'} localState={localState} localDispatch={localDispatch} setList={setList}/>
           </HStack>
           <HStack
             mt={'1rem'}
@@ -206,7 +129,7 @@ function KBoard() {
             alignItems={'start'}
           >
             <TaskList heading={'backlog'} list={list} setList={setList} listNumber={0} height={`${height}rem`}/>
-            <TaskList heading={'selected for development'} list={list} setList={setList} listNumber={1} height={`${height}rem`} />
+            <TaskList heading={'selected'} list={list} setList={setList} listNumber={1} height={`${height}rem`} />
             <TaskList heading={'in progress'} list={list} setList={setList} listNumber={2} height={`${height}rem`} />
             <TaskList heading={'done'} list={list} setList={setList} listNumber={3} height={`${height}rem`} />
           </HStack>

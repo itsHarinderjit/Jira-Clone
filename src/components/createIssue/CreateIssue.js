@@ -4,23 +4,22 @@ import { getIconOption } from '../kanbanBoard/TaskModel'
 import { getTypeIcon,getPriorityIcon } from '../kanbanBoard/TaskCard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSquareCheck,faBug,faBookmark,faAngleDown,faPlus,faArrowUp,faArrowDown } from '@fortawesome/free-solid-svg-icons'
-import img1 from '../../res/user1.png'
-import img2 from '../../res/user2.jpg'
-import img3 from '../../res/user3.jpg'
 import UserCard from '../UserCard'
 import ButtonMod from '../ButtonMod'
+import { useSelector } from 'react-redux'
 
 function CreateIssue() {
+    const allUsers = useSelector((state)=>state.data.projectUsers)
+    const projName = useSelector((state)=>state.data.currProject)['name']
+    const currUser = useSelector((state)=>state.data.user)
     const [Task,setTask] = useState({
+        id: 'HP007',
         heading: '',
         description: '',
         type: 'task',
         status: 'backlog',
         assignees: [],
-        reporter: {
-            name: 'Rick Sanchez',
-            userImg: img1
-        },
+        reporter: currUser,
         priority: "medium",
         orgEstTime: null,
         timeSpent: null,
@@ -41,20 +40,6 @@ function CreateIssue() {
         {
             type: 'story',
             icon: <FontAwesomeIcon icon={faBookmark} color='#65ba43' />
-        }
-    ]
-    const members = [
-        {
-          name: 'Rick Sanchez',
-          userImg: img1
-        },
-        {
-          name: 'Baby Yoda',
-          userImg: img2
-        },
-        {
-          name: 'You Know Who',
-          userImg: img3
         }
     ]
     const allPriority = [
@@ -109,7 +94,7 @@ function CreateIssue() {
                 fontSize={'md'}
                 color={'gray.600'}
             >
-                Projects &nbsp; / &nbsp; Jira-rice 2.0 &nbsp; / &nbsp; Create Issue
+                Projects &nbsp; / &nbsp; {projName} &nbsp; / &nbsp; Create Issue
             </Text>
             <Text
                 textTransform={'capitalize'}
@@ -276,7 +261,7 @@ function CreateIssue() {
                     width={'39rem'}
                 >
                     {
-                        members.map((member) => {
+                        allUsers.map((member) => {
                             if(member.name === Task.reporter.name)
                                 return <></>
                             return(
@@ -356,7 +341,7 @@ function CreateIssue() {
                                         setTask({...Task,assignees:newArr})
                                     }}
                                 >
-                                    <UserCard user={assignee} type={'assignee'} />
+                                    <UserCard user={assignee} type={'assignee'} mb={'0.25rem'}/>
                                 </Box>
                             )
                         })
@@ -393,7 +378,7 @@ function CreateIssue() {
                     width={'39rem'}
                 >
                     {
-                        members.map((member)=> {
+                        allUsers.map((member)=> {
                             for(let x in Task.assignees) {
                                 if(Task.assignees[x].name === member.name) {
                                     return <></>
@@ -504,10 +489,7 @@ function CreateIssue() {
                             type: 'task',
                             status: 'backlog',
                             assignees: [],
-                            reporter: {
-                                name: 'Rick Sanchez',
-                                userImg: img1
-                            },
+                            reporter: currUser,
                             priority: "medium",
                             orgEstTime: null,
                             timeSpent: null,

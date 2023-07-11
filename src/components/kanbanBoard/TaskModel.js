@@ -4,12 +4,12 @@ import { getTypeIcon,getPriorityIcon } from './TaskCard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleDown, faBookmark, faBug, faClose, faPlus, faSquareCheck, faTrashCan,faArrowUp,faArrowDown } from '@fortawesome/free-solid-svg-icons'
 import DeletePrompt from '../DeletePrompt'
-import userImg from '../../res/user1.png'
 import ButtonMod from '../ButtonMod'
 import Comment, { getNumberOfDays } from './Comment'
 import UserCard from '../UserCard'
 import TimeTracker from './TimeTracker'
 import TimerPrompt from './TimerPrompt'
+import { useSelector } from 'react-redux'
 
 export function getIconOption(icon,text,design) {
     return (
@@ -81,7 +81,7 @@ function TaskModel({task,setModelOpen}) {
             icon: <FontAwesomeIcon icon={faBookmark} color='#65ba43' />
         }
     ]
-    const allStatus = ["backlog","selected for development","in progress","done"]
+    const allStatus = ["backlog","selected","in progress","done"]
     const allPriority = [
         {
             type: "highest",
@@ -122,6 +122,13 @@ function TaskModel({task,setModelOpen}) {
     function handleMenuClick(property,type) {
         setTask({...Task,[property]:type})
     }
+    const assignees = useSelector((state)=>state.data.projectUsers).filter((user)=> {
+        return Task.assignees.includes(user.id)
+    })
+    const reporter = useSelector((state)=>state.data.projectUsers).filter((user)=>{
+        return Task.reporter === user.id
+    })[0]
+    const currUser = useSelector((state)=>state.data.user)
   return (
     <Box
         zIndex={1000}
@@ -294,7 +301,7 @@ function TaskModel({task,setModelOpen}) {
                             alignItems={'left'}
                             mt={'1rem'}
                         >
-                            <Avatar name='Rick' src={userImg} size={'sm'} ml={'0.65rem'} />
+                            <Avatar name={currUser.name} src={currUser.userImg} size={'sm'} ml={'0.65rem'} />
                             {
                                 !isCommenting ? (
                                     <Button
@@ -427,15 +434,15 @@ function TaskModel({task,setModelOpen}) {
                             assignees
                         </Text>
                         {
-                            Task.assignees.length > 0 ? (
+                            assignees.length > 0 ? (
                                 <Box
                                     display={'flex'}
                                     flexWrap={'wrap'}
                                 >
                                     {
-                                        Task.assignees.map((user)=> {
+                                        assignees.map((user)=> {
                                             return (
-                                                <UserCard user={user} type={'assignee'}/>
+                                                <UserCard user={user} type={'assignee'} mb={'0.25rem'}/>
                                             )
                                         })
                                     }
@@ -493,7 +500,7 @@ function TaskModel({task,setModelOpen}) {
                         >
                             reporter
                         </Text>
-                        <UserCard user={Task.reporter}/>
+                        <UserCard user={reporter}/>
                         <Text
                             textTransform={'uppercase'}
                             fontWeight={'medium'}

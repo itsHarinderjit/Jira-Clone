@@ -2,34 +2,37 @@ import { VStack,Text, Box, FormControl, FormLabel, Input, FormErrorMessage, Text
 import { faAngleDown, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useState } from 'react'
-import user1 from '../../res/user1.png'
-import user2 from '../../res/user2.jpg'
-import user3 from '../../res/user3.jpg'
+// import user1 from '../../res/user1.png'
+// import user2 from '../../res/user2.jpg'
+// import user3 from '../../res/user3.jpg'
 import UserCard from '../UserCard'
 import ButtonMod from '../ButtonMod'
+import { useSelector } from 'react-redux'
 
 function ProjSettings() {
-    const [project,setProject] = useState({
-        name: 'Jira-rice 2.0',
-        description: "Plan, track, and manage your agile and software development projects in Jira. Customize your workflow, collaborate, and release great software.",
-        category: "software",
-        members: [
-            {
-                name: "rick sanchez",
-                userImg: user1
-            },
-            {
-                name: "baby yoda",
-                userImg: user2
-            },
-            {
-                name: "you know who",
-                userImg: user3
-            }
-        ]
-    })
+    const [project,setProject] = useState(useSelector((state)=>state.data.currProject))
+    const [users,setUsers] = useState(useSelector((state)=>state.data.projectUsers))
+    // const [project,setProject] = useState({
+    //     name: 'Jira-rice 2.0',
+    //     description: "Plan, track, and manage your agile and software development projects in Jira. Customize your workflow, collaborate, and release great software.",
+    //     category: "software",
+    //     members: [
+    //         {
+    //             name: "rick sanchez",
+    //             userImg: user1
+    //         },
+    //         {
+    //             name: "baby yoda",
+    //             userImg: user2
+    //         },
+    //         {
+    //             name: "you know who",
+    //             userImg: user3
+    //         }
+    //     ]
+    // })
     const toast = useToast()
-    const allCategories = ["software","marketing","bussiness"]
+    const allCategories = ["software","marketing","bussiness","management"]
     function handleInputChange(e) {
         const componentId = e.target.id
         const value = e.target.value
@@ -41,12 +44,12 @@ function ProjSettings() {
     }
     function handleMemberChange(type,member) {
         if(type === 'remove') {
-            const newMembers = project.members
+            let newMembers = [...users]
             const ind = newMembers.indexOf(member)
             if(ind > -1) {
                 newMembers.splice(ind,1)
             }
-            setProject({...project,members:newMembers})
+            setUsers(newMembers)
         }
     }
   return (
@@ -70,7 +73,7 @@ function ProjSettings() {
                 fontSize={'md'}
                 color={'gray.600'}
             >
-                Projects &nbsp; / &nbsp; Jira-rice 2.0 &nbsp; / &nbsp; Project Details
+                Projects &nbsp; / &nbsp; {project.name} &nbsp; / &nbsp; Project Details
             </Text>
             <Text
                 textTransform={'capitalize'}
@@ -182,14 +185,14 @@ function ProjSettings() {
                     borderRadius={'0.2rem'}
                     rightIcon={<FontAwesomeIcon icon={faAngleDown}/>}
                 >
-                    {project.category}
+                    {project.type}
                 </MenuButton>
                 <MenuList
                     width={'39rem'}
                 >
                     {
                         allCategories.map((category)=> {
-                            if(project.category !== category) {
+                            if(project.type !== category) {
                                 return (
                                     <MenuItem
                                         textTransform={'capitalize'}
@@ -199,7 +202,7 @@ function ProjSettings() {
                                         _hover={{
                                             backgroundColor: '#d8e4fc'
                                         }}
-                                        onClick={()=>setProject({...project,category:category})}
+                                        onClick={()=>setProject({...project,type:category})}
                                     >
                                         {category}
                                     </MenuItem>
@@ -226,12 +229,12 @@ function ProjSettings() {
                 flexWrap={'wrap'}
             >
                 {
-                    project.members.map((member)=> {
+                    users.map((member)=> {
                         return (
                             <Box
                                 onClick={()=>handleMemberChange('remove',member)}
                             >
-                                <UserCard user={member} type={'assignee'} />
+                                <UserCard user={member} type={'assignee'} mb={'0.25rem'} />
                             </Box>
                         )
                     })

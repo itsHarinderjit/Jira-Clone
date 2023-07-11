@@ -1,23 +1,24 @@
 import { Box, HStack, VStack,Image,Text,Divider } from '@chakra-ui/react'
 import React, { useState } from 'react'
-import img from '../../res/ad.png'
 import MenuButtons from './MenuButtons'
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faClapperboard,faGear,faPlus } from '@fortawesome/free-solid-svg-icons'
+import { useSelector } from 'react-redux'
 
 function MainMenu() {
-    const project = {
-        name: 'Jira-rice 2.0',
-        type: 'software',
-        src: img
-    }
+    // const project = {
+    //     name: 'Jira-rice 2.0',
+    //     type: 'software',
+    //     src: img
+    // }
     const [clickedLink,setClickedLink] = useState('KBoard')
     const color = '#5d6064'
     const selectedColor = '#0052cc'
     const boardIcon = <FontAwesomeIcon icon={faClapperboard} size='lg' color={clickedLink === 'KBoard' ? selectedColor : color}/>
     const settingIcon = <FontAwesomeIcon icon={faGear} size='lg' color={clickedLink === 'PSettings' ? selectedColor : color}/>
     const addIcon = <FontAwesomeIcon icon={faPlus} size='lg' color={clickedLink === 'CIssue' ? selectedColor : color}/>
+    const project = useSelector((state)=>state.data.currProject)
   return (
     <Box
         width={'14rem'}
@@ -38,7 +39,7 @@ function MainMenu() {
             <HStack
                 mb={'1.75rem'}
             >
-                <Image src={project.src} alt='Project logo' height={'2.8rem'} width={'2.8rem'} borderRadius={'0.25rem'}/>
+                <Image src={project.projectImg} alt='Project logo' height={'2.8rem'} width={'2.8rem'} borderRadius={'0.25rem'}/>
                 <VStack
                     alignItems={'left'}
                     pl={'0.5rem'}

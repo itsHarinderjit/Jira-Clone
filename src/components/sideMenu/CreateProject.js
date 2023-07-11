@@ -4,9 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleDown, faPlus } from '@fortawesome/free-solid-svg-icons'
 import UserCard from '../UserCard'
 import ButtonMod from '../ButtonMod'
-import user1 from '../../res/user1.png'
-import user2 from '../../res/user2.jpg'
-import user3 from '../../res/user3.jpg'
 
 function CreateProject({setOpenProjectModel}) {
     const toast = useToast()
@@ -15,21 +12,10 @@ function CreateProject({setOpenProjectModel}) {
         description: "",
         category: "software",
         members: [
-            {
-                name: "rick sanchez",
-                userImg: user1
-            },
-            {
-                name: "baby yoda",
-                userImg: user2
-            },
-            {
-                name: "you know who",
-                userImg: user3
-            }
+            
         ]
     })
-    const allCategories = ["software","marketing","bussiness"]
+    const allCategories = ["software","marketing","bussiness","management"]
     function handleInputChange(e) {
         const componentId = e.target.id
         const value = e.target.value

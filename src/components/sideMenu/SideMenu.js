@@ -2,28 +2,16 @@ import React, { useState } from 'react'
 import {Avatar, Box, HStack, Img, Link, VStack, Text, Divider} from '@chakra-ui/react'
 import logo from '../../res/logo.svg'
 import MenuButtons from './MenuButtons'
-import MenuAvatars from '../mainMenu/MenuAvatars'
-import img1 from '../../res/jira-rice.jpg'
-import img2 from '../../res/todo.png'
-import img3 from '../../res/ad.png'
-import user from '../../res/user1.png'
+import MenuAvatars from './MenuAvatars'
+import { changeCurrentProject } from '../../redux/slice'
 import CreateProject from './CreateProject'
+import { useDispatch, useSelector } from 'react-redux'
 
 function SideMenu() {
-  const projects = [
-    {
-      name: 'Jira-rice',
-      src: img1
-    },
-    {
-      name: 'Todo list',
-      src: img2
-    },
-    {
-      name: 'Ad compaign',
-      src: img3
-    }
-  ]
+  const projects = useSelector((state)=>state.data.projects)
+  const currProject = useSelector((state)=>state.data.currProject)
+  const user = useSelector((state)=>state.data.user)
+  const dispatch = useDispatch()
   const [openProjectModel,setOpenProjectModel] = useState(false)
   return (
     <Box
@@ -37,9 +25,10 @@ function SideMenu() {
       backgroundColor={'#0747a6'}
       overflow={'hidden'}
       whiteSpace={'nowrap'}
-      transition={'0.1s'}
-      transitionTimingFunction={'linear'}
-      _hover={{ width:'200px' }}
+      transition={'width 0.2s'}
+      _hover={{ 
+        width:'220px'
+       }}
       color={'whiteAlpha.900'}
       zIndex={1}
     >
@@ -62,14 +51,15 @@ function SideMenu() {
             py={'0.5rem'}
             mt={'1rem'}
           >
-            <Avatar name='Rick Sanchez' src={user} size={'sm'}/>
+            <Avatar name='Rick Sanchez' src={user.userImg} size={'sm'}/>
             <Text
               fontWeight={'medium'}
               fontSize={'sm'}
               pl={'0.1rem'}
+              pr={'0.75rem'}
               textTransform={'capitalize'}
             >
-              rick sanchez
+              {user.name}
             </Text>
           </HStack>
 
@@ -78,7 +68,7 @@ function SideMenu() {
           {
             projects.map((project)=> {
               return (
-                <MenuAvatars project={project} />
+                <MenuAvatars project={project} isSelected={project.id === currProject.id} onClick={()=>dispatch(changeCurrentProject(project.id))} key={project.id}/>
               );
             })
           }

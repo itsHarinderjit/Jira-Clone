@@ -3,7 +3,7 @@ import { faClose } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 
-function UserCard({user,type}) {
+function UserCard({user,type,...rest}) {
   return (
     <HStack
         ml={'0.2rem'}
@@ -16,6 +16,7 @@ function UserCard({user,type}) {
         _hover={{
           backgroundColor: '#dfe1e6'
         }}
+        {...rest}
     >
         <Avatar src={user.userImg} name={user.name} size={'xs'} />
         <Text

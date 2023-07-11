@@ -1,12 +1,14 @@
 import { Box, VStack,Text, HStack, Avatar, AvatarGroup } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import TaskModel from './TaskModel'
-import img1 from '../../res/user1.png'
-import img2 from '../../res/user2.jpg'
-import img3 from '../../res/user3.jpg'
+// import img1 from '../../res/user1.png'
+// import img2 from '../../res/user2.jpg'
+// import img3 from '../../res/user3.jpg'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowDown, faArrowUp, faBookmark, faBug, faSquareCheck } from '@fortawesome/free-solid-svg-icons'
 import { useDrag } from 'react-dnd'
+import { useSelector } from 'react-redux'
+// import { getUsers } from '../../redux/slice'
 
 export function getPriorityIcon(priority) {
     if(priority === 'highest')
@@ -32,36 +34,10 @@ function TaskCard({Task,list,listNumber,setList}) {
     const priorityIcon = getPriorityIcon(Task.priority)
     const typeIcon = getTypeIcon(Task.type)
     const [modelOpen,setModelOpen] = useState(false)
-    const task = {
-        heading: Task.heading,
-        description: `An issue's priority indicates its relative importance. The default priorities are listed below. Both the priorities and their meanings can be customized by your administrator to suit your organization`,
-        type: Task.type,
-        status: 'backlog',
-        assignees: Task.assignees,
-        reporter: {
-            name: 'Baby yoda',
-            userImg: img2
-        },
-        priority: Task.priority,
-        orgEstTime: null,
-        timeSpent: null,
-        createdOn: new Date("6/20/2023"),
-        updatedOn: new Date("7/3/2023"),
-        comments: [
-            {
-                content: 'This is a comment',
-                userName: 'rick sanchez',
-                userImg: img1,
-                createdOn: new Date("7/1/2023")
-            },
-            {
-                content: 'My name is Tom Riddle',
-                userName: 'you know who',
-                userImg: img3,
-                createdOn: new Date("7/3/2023")
-            }
-        ]
-    }
+    const task = Task
+    const users = useSelector((state)=>state.data.projectUsers).filter((user)=>{
+        return task.assignees.includes(user.id)
+    })
     const [{isDragging},drag] = useDrag(()=> ({
         type: 'taskCard',
         end: (item,monitor) => {
@@ -94,7 +70,7 @@ function TaskCard({Task,list,listNumber,setList}) {
         }),
     }))
     const display = isDragging ? 'none' : 'block'
-  return (
+    return (
     <>
         <Box
             ref={drag}
@@ -134,7 +110,7 @@ function TaskCard({Task,list,listNumber,setList}) {
                         position={'relative'}
                     >
                         {
-                            Task.assignees.map((user)=> {
+                            users.map((user)=> {
                                 return <Avatar src={user.userImg} name={user.name} boxSize={'1.75rem'} />
                             })
                         }
