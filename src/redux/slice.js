@@ -34,6 +34,11 @@ const slice = createSlice({
             state.currProject = state.projects.filter((item)=>{
                 return item.id === action.payload
             })[0]
+            let users = []
+            for(let x in state.currProject.users) {
+                users.push(Users[state.currProject.users[x]])
+            }
+            state.projectUsers = users
         },
         changeTaskInfo(state,action) {
             const taskId = action.payload.id

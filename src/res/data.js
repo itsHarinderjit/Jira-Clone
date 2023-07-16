@@ -9,7 +9,7 @@ import ProfMcGonagall from './userImg/ProfMcGonagall.jpg'
 import ProfSnape from './userImg/ProfSnape.jpg'
 import RonWeasley from './userImg/RonWeasley.jpg'
 import Hogwards from './projImg/Hogwards.jpg'
-import jiraRice from './jira-rice.jpg'
+import gobletOfFire from './projImg/gobletOfFire.jpg'
 
 export const Users = {
     U001: {
@@ -96,26 +96,6 @@ export const Projects = {
             "U005",
             "U003",
             "U006"
-            // {
-            //     id: "U001",
-            //     name: "Professor McGonagall"
-            // },
-            // {
-            //     id: "U004",
-            //     name: "Professor Dumbledore"
-            // },
-            // {
-            //     id: "U005",
-            //     name: "Filch"
-            // },
-            // {
-            //     id: "U003",
-            //     name: "Professor Snape"
-            // },
-            // {
-            //     id: "U006",
-            //     name: "Hagrid"
-            // }
         ],
         tasks: {
             HP001: {
@@ -216,11 +196,110 @@ export const Projects = {
     },
     P002: {
         id: 'P002',
-        name: 'Proj',
-        users: {},
-        tasks: {},
-        type: 'marketing',
-        projectImg: jiraRice
+        name: 'Triwizard Tournament',
+        users: [
+            "U004",
+            "U007",
+            "U001",
+            "U003",
+            "U002"
+        ],
+        tasks: {
+            GoF001: {
+                id: 'GoF001',
+                heading: "Investigate the Triwizard Tournament Selection Process",
+                description: "There are concerns about the fairness of the Triwizard Tournament selection process. We need to conduct a thorough investigation and address any potential biases or loopholes in the system.",
+                type: "task",
+                status: "selected",
+                reporter: "U003",
+                assignees: [
+                    "U003",
+                    "U001"
+                ],
+                priority: "high",
+                orgEstTime: 10,
+                timeSpent: 2,
+                timeRemaining: null,
+                createdOn: new Date("7/10/2023").toString(),
+                updatedOn: new Date("7/10/2023").toString(),
+                comments: []
+            },
+            GoF002: {
+                id: 'GoF002',
+                heading: "Secure the Hogwarts Grounds for the Tournament Tasks",
+                description: " The upcoming Triwizard Tournament tasks pose potential security risks to the Hogwarts grounds. We need to enhance security measures, set up protective enchantments, and assign staff members for monitoring and emergency response.",
+                type: "task",
+                status: "done",
+                reporter: "U003",
+                assignees: [
+                    "U007"
+                ],
+                priority: "highest",
+                orgEstTime: 10,
+                timeSpent: 5,
+                timeRemaining: null,
+                createdOn: new Date("6/12/2023").toString(),
+                updatedOn: new Date("6/12/2023").toString(),
+                comments: []
+            },
+            GoF003: {
+                id: 'GoF003',
+                heading: "Procure and Prepare Tournament Equipment",
+                description: " The Triwizard Tournament requires specific equipment for each task, such as dragons, underwater obstacles, and maze elements. We need to procure the necessary items and ensure they are properly prepared and maintained.",
+                type: "task",
+                status: "backlog",
+                reporter: "U003",
+                assignees: [
+                    "U002",
+                    "U007"
+                ],
+                priority: "medium",
+                orgEstTime: 8,
+                timeSpent: 2,
+                timeRemaining: null,
+                createdOn: new Date("6/27/2023").toString(),
+                updatedOn: new Date("6/27/2023").toString(),
+                comments: []
+            },
+            GoF004: {
+                id: 'GoF004',
+                heading: "Arrange Accommodations for the Visiting Schools",
+                description: "Participants from Beauxbatons Academy and Durmstrang Institute require accommodations during their stay at Hogwarts for the Triwizard Tournament. We need to make suitable arrangements for their comfort and safety.",
+                type: "task",
+                status: "done",
+                reporter: "U004",
+                assignees: [
+                    "U001"
+                ],
+                priority: "low",
+                orgEstTime: 4,
+                timeSpent: 3,
+                timeRemaining: null,
+                createdOn: new Date("6/15/2023").toString(),
+                updatedOn: new Date("6/15/2023").toString(),
+                comments: []
+            },
+            GoF005: {
+                id: 'GoF005',
+                heading: "Plan and Organize the Yule Ball",
+                description: "The Yule Ball is a significant event during the Triwizard Tournament. We need to plan and coordinate the ball, including venue arrangements, decorations, music, and catering.",
+                type: "task",
+                status: "in progress",
+                reporter: "U003",
+                assignees: [
+                    "U002"
+                ],
+                priority: "high",
+                orgEstTime: 1,
+                timeSpent: 1,
+                timeRemaining: null,
+                createdOn: new Date("6/19/2023").toString(),
+                updatedOn: new Date("6/19/2023").toString(),
+                comments: []
+            }
+        },
+        type: 'management',
+        projectImg: gobletOfFire
     }
 }
 
