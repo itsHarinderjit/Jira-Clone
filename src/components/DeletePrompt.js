@@ -1,9 +1,12 @@
 import { Box, HStack, Text } from '@chakra-ui/react'
 import React from 'react'
 import ButtonMod from './ButtonMod'
+import { useDispatch } from 'react-redux'
+import { deleteIssue, deleteUser } from '../redux/slice'
 
-function DeletePrompt({type,setOpenDeletePrompt}) {
+function DeletePrompt({type,setOpenDeletePrompt,valueId,list,setList}) {
   let text = ''
+  const dispatch = useDispatch()
   if(type === 'issue') {
     text = 'Are you sure you want to delete this issue?'
   }
@@ -44,7 +47,20 @@ function DeletePrompt({type,setOpenDeletePrompt}) {
             pt={'2rem'}
           >
             <Box
-              onClick={()=>setOpenDeletePrompt(false)}
+              onClick={()=>{
+                if(type === 'comment') {
+                  let comments = list.comments
+                  comments.splice(valueId,1)
+                  setList({...list,comments:comments})
+                }
+                else if(type === 'issue') {
+                  dispatch(deleteIssue(valueId))
+                }
+                else if(type === 'user') {
+                  dispatch(deleteUser(valueId))
+                }
+                setOpenDeletePrompt(false)
+              }}
             >
               <ButtonMod type={'primary'} text={'delete'} setOpenDeletePrompt={setOpenDeletePrompt} />
             </Box>

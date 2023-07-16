@@ -6,14 +6,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSquareCheck,faBug,faBookmark,faAngleDown,faPlus,faArrowUp,faArrowDown } from '@fortawesome/free-solid-svg-icons'
 import UserCard from '../UserCard'
 import ButtonMod from '../ButtonMod'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { addIssue } from '../../redux/slice'
+import uuid from 'react-uuid'
 
 function CreateIssue() {
     const allUsers = useSelector((state)=>state.data.projectUsers)
     const projName = useSelector((state)=>state.data.currProject)['name']
     const currUser = useSelector((state)=>state.data.user)
+    const dispatch = useDispatch()
     const [Task,setTask] = useState({
-        id: 'HP007',
+        id: '',
         heading: '',
         description: '',
         type: 'task',
@@ -126,7 +129,7 @@ function CreateIssue() {
                     borderRadius={'0.2rem'}
                     rightIcon={<FontAwesomeIcon icon={faAngleDown}/>}
                 >
-                    {getIconOption(getTypeIcon(Task.type),Task.type,{transform:'capitilize',weight:'semibold',isTop:false})}
+                    {getIconOption(getTypeIcon(Task.type),Task.type,null,{transform:'capitilize',weight:'semibold',isTop:false})}
                 </MenuButton>
                 <MenuList
                     width={'39rem'}
@@ -147,7 +150,7 @@ function CreateIssue() {
                                     }}
                                     onClick={()=>setTask({...Task,type:type.type})}
                                 >
-                                    {getIconOption(type.icon,type.type,{transform:'capitilize',weight:'semibold',isTop:false})}
+                                    {getIconOption(type.icon,type.type,null,{transform:'capitilize',weight:'semibold',isTop:false})}
                                 </MenuItem>
                             )
                         })
@@ -255,7 +258,7 @@ function CreateIssue() {
                     borderRadius={'0.2rem'}
                     rightIcon={<FontAwesomeIcon icon={faAngleDown}/>}
                 >
-                    {getIconOption(<Avatar src={Task.reporter.userImg} size={'xs'}/>,Task.reporter.name,{transform:'capitilize',weight:'semibold',isTop:false})}
+                    {getIconOption(<Avatar src={Task.reporter.userImg} size={'xs'}/>,Task.reporter.name,null,{transform:'capitilize',weight:'semibold',isTop:false})}
                 </MenuButton>
                 <MenuList
                     width={'39rem'}
@@ -276,7 +279,7 @@ function CreateIssue() {
                                     }}
                                     onClick={()=>setTask({...Task,reporter:member})}
                                 >
-                                    {getIconOption(<Avatar src={member.userImg} size={'xs'}/>,member.name,{transform:'capitilize',weight:'semibold',isTop:false})}
+                                    {getIconOption(<Avatar src={member.userImg} size={'xs'}/>,member.name,null,{transform:'capitilize',weight:'semibold',isTop:false})}
                                 </MenuItem>
                             )
                         })
@@ -325,6 +328,7 @@ function CreateIssue() {
                     Task.assignees.length > 0 && (
                         <Box
                         display={'flex'}
+                        flexWrap={'wrap'}
                         position={'relative'}
                         top={'-2.4rem'}
                         width={'fit-content'}
@@ -400,7 +404,7 @@ function CreateIssue() {
                                         setTask({...Task,assignees:arr})
                                     }}
                                 >
-                                    {getIconOption(<Avatar src={member.userImg} size={'xs'}/>,member.name,{transform:'capitilize',weight:'semibold',isTop:false})}
+                                    {getIconOption(<Avatar src={member.userImg} size={'xs'}/>,member.name,null,{transform:'capitilize',weight:'semibold',isTop:false})}
                                 </MenuItem>
                             )
                         })
@@ -430,7 +434,7 @@ function CreateIssue() {
                     borderRadius={'0.2rem'}
                     rightIcon={<FontAwesomeIcon icon={faAngleDown}/>}
                 >
-                    {getIconOption(getPriorityIcon(Task.priority),Task.priority,{transform:'capitilize',weight:'semibold',isTop:false})}
+                    {getIconOption(getPriorityIcon(Task.priority),Task.priority,null,{transform:'capitilize',weight:'semibold',isTop:false})}
                 </MenuButton>
                 <MenuList
                     width={'39rem'}
@@ -451,7 +455,7 @@ function CreateIssue() {
                                     }}
                                     onClick={()=>setTask({...Task,priority:priority.type})}
                                 >
-                                    {getIconOption(priority.icon,priority.type,{transform:'capitilize',weight:'semibold',isTop:false})}
+                                    {getIconOption(priority.icon,priority.type,null,{transform:'capitilize',weight:'semibold',isTop:false})}
                                 </MenuItem>
                             )
                         })
@@ -474,8 +478,9 @@ function CreateIssue() {
             >
                 <Box
                     onClick={()=> {
-                        Task.createdOn = new Date()
-                        Task.updatedOn = new Date()
+                        Task.createdOn = new Date().toString()
+                        Task.updatedOn = new Date().toString()
+                        Task.id = uuid().slice(0,8)
                         toast({
                             title: 'Issue created successfully',
                             status: 'success',
@@ -483,6 +488,7 @@ function CreateIssue() {
                             isClosable: true,
                             position: 'top-right'
                         })
+                        dispatch(addIssue(Task))
                         setTask({
                             heading: '',
                             description: '',

@@ -4,16 +4,27 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleDown, faPlus } from '@fortawesome/free-solid-svg-icons'
 import UserCard from '../UserCard'
 import ButtonMod from '../ButtonMod'
+import { useDispatch } from 'react-redux'
+import { addProject } from '../../redux/slice'
 
 function CreateProject({setOpenProjectModel}) {
     const toast = useToast()
+    const dispatch = useDispatch()
     const [project,setProject] = useState({
+        id: 'P003',
         name: ' ',
         description: "",
-        category: "software",
+        users: [
+
+        ],
+        tasks: {
+
+        },
+        type: "software",
         members: [
             
-        ]
+        ],
+        projectImg: ''
     })
     const allCategories = ["software","marketing","bussiness","management"]
     function handleInputChange(e) {
@@ -100,7 +111,6 @@ function CreateProject({setOpenProjectModel}) {
                 {
                     project.name === '' ? (
                         <FormErrorMessage
-                            // fontWeight={'medium'}
                             fontSize={'xs'}
                         >
                             This field is required
@@ -170,14 +180,14 @@ function CreateProject({setOpenProjectModel}) {
                     borderRadius={'0.2rem'}
                     rightIcon={<FontAwesomeIcon icon={faAngleDown}/>}
                 >
-                    {project.category}
+                    {project.type}
                 </MenuButton>
                 <MenuList
                     width={'39rem'}
                 >
                     {
                         allCategories.map((category)=> {
-                            if(project.category !== category) {
+                            if(project.type !== category) {
                                 return (
                                     <MenuItem
                                         textTransform={'capitalize'}
@@ -187,7 +197,7 @@ function CreateProject({setOpenProjectModel}) {
                                         _hover={{
                                             backgroundColor: '#d8e4fc'
                                         }}
-                                        onClick={()=>setProject({...project,category:category})}
+                                        onClick={()=>setProject({...project,type:category})}
                                     >
                                         {category}
                                     </MenuItem>
@@ -257,6 +267,7 @@ function CreateProject({setOpenProjectModel}) {
             >
             <Box
                 onClick={()=> {
+                    dispatch(addProject(project))
                     toast({
                         title: 'Project created successfully',
                         status: 'success',

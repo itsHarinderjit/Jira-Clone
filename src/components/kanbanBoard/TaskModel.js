@@ -9,9 +9,11 @@ import Comment, { getNumberOfDays } from './Comment'
 import UserCard from '../UserCard'
 import TimeTracker from './TimeTracker'
 import TimerPrompt from './TimerPrompt'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { changeTaskInfo } from '../../redux/slice'
+import uuid from 'react-uuid'
 
-export function getIconOption(icon,text,design) {
+export function getIconOption(icon,text,id,design) {
     return (
         <HStack>
             {icon}
@@ -24,7 +26,7 @@ export function getIconOption(icon,text,design) {
                 whiteSpace={'nowrap'}
             >
                 {
-                    design.isTop ? `${text}-1186495` : text 
+                    design.isTop ? `${text}-${id}` : text 
                 }
             </Text>
         </HStack>
@@ -66,6 +68,8 @@ function TaskModel({task,setModelOpen}) {
     const [openTimerPrompt,setOpenTimerPrompt] = useState(false)
     const [Task,setTask] = useState(task)
     const [isCommenting,setIsCommenting] = useState(false)
+    const [commentValue,setCommentValue] = useState('')
+    const dispatch = useDispatch()
     let statusCount = -1
     const allTypes = [
         {
@@ -106,6 +110,10 @@ function TaskModel({task,setModelOpen}) {
     ]
     function handleCloseClick() {
         setModelOpen(false)
+        dispatch(changeTaskInfo({
+            id: Task.id,
+            value: {...Task}
+        }))
     }
     function handleDeleteClick() {
         setOpenDeletePrompt(true)
@@ -158,11 +166,7 @@ function TaskModel({task,setModelOpen}) {
                 py={'1.75rem'}
             >
                 <HStack>
-                    <Menu
-                        borderColor={'red'}
-                        borderStyle={'dashed'}
-                        borderWidth={'1px'}
-                    >
+                    <Menu>
                         <MenuButton
                             px={'0.75rem'}
                             py={'0.25rem'}
@@ -171,7 +175,7 @@ function TaskModel({task,setModelOpen}) {
                                 backgroundColor: '#ebecf0'
                             }}
                         >
-                            {getIconOption(getTypeIcon(Task.type),Task.type,{transform:'uppercase',weight:'medium',isTop:true})}
+                            {getIconOption(getTypeIcon(Task.type),Task.type,Task.id,{transform:'uppercase',weight:'medium',isTop:true})}
                         </MenuButton>
                         <MenuList
                             minWidth={'10rem'}
@@ -187,7 +191,7 @@ function TaskModel({task,setModelOpen}) {
                                                     backgroundColor: '#d8e4fc'
                                                 }}
                                             >
-                                                {getIconOption(type.icon,type.type,{transform:'capitalize',weight:'',isTop:false})}
+                                                {getIconOption(type.icon,type.type,null,{transform:'capitalize',weight:'',isTop:false})}
                                             </MenuItem>
                                         )
                                     }
@@ -330,6 +334,8 @@ function TaskModel({task,setModelOpen}) {
                                             placeholder='Add a comment...'
                                             width={'100%'}
                                             height={'2rem'}
+                                            overflow={'hidden'}
+                                            value={commentValue}
                                             backgroundColor={'#e6e7e9'}
                                             borderColor={'gray.400'}
                                             borderWidth={'1px'}
@@ -339,13 +345,30 @@ function TaskModel({task,setModelOpen}) {
                                                 borderWidth: '0.15rem',
                                                 borderRadius: '0.25rem'
                                             }}
+                                            onChange={(e)=>{
+                                                setCommentValue(e.target.value)
+                                                e.target.style.height = 'auto'
+                                                e.target.style.height = e.target.scrollHeight + 'px'
+                                            }}
                                         />
                                         <HStack
                                             mt={'1rem'}
                                             spacing={'1rem'}
                                         >
                                             <Box
-                                                onClick={()=>setIsCommenting(false)}
+                                                onClick={()=>{
+                                                    let comment = {
+                                                        id: uuid().slice(0,8),
+                                                        user: currUser,
+                                                        content: commentValue,
+                                                        createdOn: new Date().toString()
+                                                    }
+                                                    let comments = task.comments
+                                                    comments.push(comment)
+                                                    setTask({...Task,comments:comments})
+                                                    setIsCommenting(false)
+                                                    setCommentValue('')
+                                                }}
                                             >
                                                 <ButtonMod type={'primary'} text={'save'} height={'2rem'} width={'3.75rem'} />
                                             </Box>
@@ -363,7 +386,7 @@ function TaskModel({task,setModelOpen}) {
                             {
                                 Task.comments.map((comment)=> {
                                     return (
-                                        <Comment comment={comment}/>
+                                        <Comment comment={comment} Task={Task} setTask={setTask} key={comment.id}/>
                                     )
                                 })
                             }
@@ -519,7 +542,7 @@ function TaskModel({task,setModelOpen}) {
                                     backgroundColor: '#ebecf0'
                                 }}
                             >
-                                {getIconOption(getPriorityIcon(Task.priority),Task.priority,{transform:'capitalize',weight:'medium',isTop:false})}
+                                {getIconOption(getPriorityIcon(Task.priority),Task.priority,null,{transform:'capitalize',weight:'medium',isTop:false})}
                             </MenuButton>
                             <MenuList>
                                 {
@@ -531,7 +554,7 @@ function TaskModel({task,setModelOpen}) {
                                                     backgroundColor: '#d8e4fc'
                                                 }}
                                             >
-                                                {getIconOption(priority.icon,priority.type,{transform:'capitalize',weight:'medium',isTop:false})}
+                                                {getIconOption(priority.icon,priority.type,null,{transform:'capitalize',weight:'medium',isTop:false})}
                                             </MenuItem>
                                         )
                                     })
@@ -612,7 +635,7 @@ function TaskModel({task,setModelOpen}) {
         </Box>
     </Box>
     {
-        openDeletePrompt && <DeletePrompt type={'issue'} setOpenDeletePrompt={setOpenDeletePrompt} />
+        openDeletePrompt && <DeletePrompt type={'issue'} setOpenDeletePrompt={setOpenDeletePrompt} valueId={Task.id} />
     }
     {
         openTimerPrompt && <TimerPrompt setOpenTimerPrompt={setOpenTimerPrompt} Task={Task} handleTaskChange={handleTaskChange} />

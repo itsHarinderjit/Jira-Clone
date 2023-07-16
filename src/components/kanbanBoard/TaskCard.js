@@ -1,14 +1,11 @@
 import { Box, VStack,Text, HStack, Avatar, AvatarGroup } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import TaskModel from './TaskModel'
-// import img1 from '../../res/user1.png'
-// import img2 from '../../res/user2.jpg'
-// import img3 from '../../res/user3.jpg'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowDown, faArrowUp, faBookmark, faBug, faSquareCheck } from '@fortawesome/free-solid-svg-icons'
 import { useDrag } from 'react-dnd'
-import { useSelector } from 'react-redux'
-// import { getUsers } from '../../redux/slice'
+import { useDispatch, useSelector } from 'react-redux'
+import { changeStatus } from '../../redux/slice'
 
 export function getPriorityIcon(priority) {
     if(priority === 'highest')
@@ -38,12 +35,29 @@ function TaskCard({Task,list,listNumber,setList}) {
     const users = useSelector((state)=>state.data.projectUsers).filter((user)=>{
         return task.assignees.includes(user.id)
     })
+    const dispatch = useDispatch()
     const [{isDragging},drag] = useDrag(()=> ({
         type: 'taskCard',
         end: (item,monitor) => {
             const dropResult = monitor.getDropResult()
             if(!dropResult)
                 return
+            let newStatus
+            if(dropResult.name === 0) {
+                newStatus = "backlog"
+            }
+            else if(dropResult.name === 1) {
+                newStatus = "selected"
+            }
+            else if(dropResult.name === 2) {
+                newStatus = "in progress"
+            }
+            else    
+                newStatus = "done"
+            dispatch(changeStatus({
+                id: Task.id,
+                newStatus: newStatus
+            }))
             let newList = list
             let deleteArr = newList[listNumber]
             const ind = deleteArr.indexOf(Task)

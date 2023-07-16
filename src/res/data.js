@@ -134,8 +134,8 @@ export const Projects = {
                 orgEstTime: 3,
                 timeSpent: 1,
                 timeRemaining: null,
-                createdOn: new Date("2/10/2023"),
-                updatedOn: new Date("2/10/2023"),
+                createdOn: new Date("2/10/2023").toString(),
+                updatedOn: new Date("2/10/2023").toString(),
                 comments: []
             },
             HP002: {
@@ -152,8 +152,8 @@ export const Projects = {
                 orgEstTime: 10,
                 timeSpent: 2,
                 timeRemaining: null,
-                createdOn: new Date("4/1/2023"),
-                updatedOn: new Date("4/1/2023"),
+                createdOn: new Date("4/1/2023").toString(),
+                updatedOn: new Date("4/1/2023").toString(),
                 comments: []
             },
             HP003: {
@@ -170,8 +170,8 @@ export const Projects = {
                 orgEstTime: 4,
                 timeSpent: 1,
                 timeRemaining: null,
-                createdOn: new Date("5/11/2023"),
-                updatedOn: new Date("5/11/2023"),
+                createdOn: new Date("5/11/2023").toString(),
+                updatedOn: new Date("5/11/2023").toString(),
                 comments: []
             },
             HP004: {
@@ -188,8 +188,8 @@ export const Projects = {
                 orgEstTime: 2,
                 timeSpent: 0,
                 timeRemaining: null,
-                createdOn: new Date("6/12/2023"),
-                updatedOn: new Date("6/12/2023"),
+                createdOn: new Date("6/12/2023").toString(),
+                updatedOn: new Date("6/12/2023").toString(),
                 comments: []
             },
             HP005: {
@@ -206,8 +206,8 @@ export const Projects = {
                 orgEstTime: 5,
                 timeSpent: 2,
                 timeRemaining: null,
-                createdOn: new Date("7/2/2023"),
-                updatedOn: new Date("7/2/2023"),
+                createdOn: new Date("7/2/2023").toString(),
+                updatedOn: new Date("7/2/2023").toString(),
                 comments: []
             },
         },
@@ -223,3 +223,5 @@ export const Projects = {
         projectImg: jiraRice
     }
 }
+
+// comment -> id,user,content,createdOn

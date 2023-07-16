@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from 'react'
+import React, { useReducer, useState, useEffect } from 'react'
 import { AvatarGroup, Box, HStack, Text, VStack } from '@chakra-ui/react'
 import Search from './Search'
 import AvatarButtons from './AvatarButtons'
@@ -9,16 +9,25 @@ import { useSelector } from 'react-redux'
 
 function KBoard() {
   const project = useSelector((state)=>state.data.currProject)
-  const data = project["tasks"]
+  const [data,setData] = useState(project["tasks"])
+  useEffect(()=>{
+    setData(project["tasks"])
+    localDispatch({
+      type: 'all',
+      value: project["tasks"]
+    })
+  },[project])
   function reducer(state,action) {
     let currState = JSON.parse(JSON.stringify(state))
-    console.log('inside reducer')
     switch(action.type) {
       case 'search' :
         currState.filters.search = action.value
       break
       case 'assignee' :
         currState.filters.assignees = action.value
+      break
+      case 'all' :
+        currState.data = action.value
       break
       default:
     }
@@ -42,7 +51,6 @@ function KBoard() {
       }
     }
     currState.data = tasks
-    console.log(currState)
     return currState
   }
   const [localState,localDispatch] = useReducer(reducer,{

@@ -2,35 +2,19 @@ import { VStack,Text, Box, FormControl, FormLabel, Input, FormErrorMessage, Text
 import { faAngleDown, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useState } from 'react'
-// import user1 from '../../res/user1.png'
-// import user2 from '../../res/user2.jpg'
-// import user3 from '../../res/user3.jpg'
 import UserCard from '../UserCard'
 import ButtonMod from '../ButtonMod'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { changeProjectInfo } from '../../redux/slice'
+import DeletePrompt from '../DeletePrompt'
 
 function ProjSettings() {
     const [project,setProject] = useState(useSelector((state)=>state.data.currProject))
-    const [users,setUsers] = useState(useSelector((state)=>state.data.projectUsers))
-    // const [project,setProject] = useState({
-    //     name: 'Jira-rice 2.0',
-    //     description: "Plan, track, and manage your agile and software development projects in Jira. Customize your workflow, collaborate, and release great software.",
-    //     category: "software",
-    //     members: [
-    //         {
-    //             name: "rick sanchez",
-    //             userImg: user1
-    //         },
-    //         {
-    //             name: "baby yoda",
-    //             userImg: user2
-    //         },
-    //         {
-    //             name: "you know who",
-    //             userImg: user3
-    //         }
-    //     ]
-    // })
+    const users = useSelector((state)=>state.data.projectUsers)
+    const currentUser = useSelector((state)=>state.data.user)
+    const [openDeletePrompt,setOpenDeletePrompt] = useState(false)
+    const [clickedUser,setClickedUser] = useState('')
+    const dispatch = useDispatch()
     const toast = useToast()
     const allCategories = ["software","marketing","bussiness","management"]
     function handleInputChange(e) {
@@ -44,16 +28,23 @@ function ProjSettings() {
     }
     function handleMemberChange(type,member) {
         if(type === 'remove') {
-            let newMembers = [...users]
-            const ind = newMembers.indexOf(member)
-            if(ind > -1) {
-                newMembers.splice(ind,1)
+            if(currentUser.id === member.id) {
+                toast({
+                    title: 'You cannot remove yourself',
+                    status: 'error',
+                    duration: 3000,
+                    isClosable: true,
+                    position: 'top-right'
+                })
+                return
             }
-            setUsers(newMembers)
+            setClickedUser(member.id)
+            setOpenDeletePrompt(true)
         }
     }
   return (
-    <Box
+    <>
+        <Box
         backgroundColor={'white'}
         position={'absolute'}
         left={'18.1rem'} 
@@ -115,7 +106,6 @@ function ProjSettings() {
                 {
                     project.name === '' ? (
                         <FormErrorMessage
-                            // fontWeight={'medium'}
                             fontSize={'xs'}
                         >
                             This field is required
@@ -268,6 +258,10 @@ function ProjSettings() {
             <Box
                 mt='1.5rem'
                 onClick={()=> {
+                    dispatch(changeProjectInfo({
+                        id: project.id,
+                        value: project
+                    }))
                     toast({
                         title: 'Changes saved successfully',
                         status: 'success',
@@ -281,6 +275,10 @@ function ProjSettings() {
             </Box>
         </VStack>
     </Box>
+    {
+        openDeletePrompt && <DeletePrompt type={'user'} setOpenDeletePrompt={setOpenDeletePrompt} valueId={clickedUser} />
+    }
+    </>
   )
 }
 

@@ -3,12 +3,13 @@ import React, { useState } from 'react'
 import ButtonMod from '../ButtonMod'
 import DeletePrompt from '../DeletePrompt'
 
-export function getNumberOfDays(date) {
+export function getNumberOfDays(dateStr) {
     const newDate = new Date()
+    const date = new Date(dateStr)
     return parseInt((newDate.getTime() - date.getTime())/(1000*60*60*24),10)
 }
 
-function Comment({comment}) {
+function Comment({comment,Task,setTask}) {
   const [inEditMode,setInEditMode] = useState(false)
   const [comm,setComm] = useState(comment)
   const [temp,setTemp] = useState(comment)
@@ -29,7 +30,7 @@ function Comment({comment}) {
       alignItems={'left'}
       width={'100%'}
     >
-      <Avatar src={comment.userImg} size={'sm'}/>
+      <Avatar src={comment.user.userImg} size={'sm'}/>
       <VStack
         ml={'0.5rem'}
         alignItems={'left'}
@@ -44,7 +45,7 @@ function Comment({comment}) {
             fontWeight={'medium'}
             color={'gray.700'}
           >
-            {comm.userName}
+            {comm.user.name}
           </Text>
           <Text
             display={'inline'}
@@ -116,6 +117,12 @@ function Comment({comment}) {
                 mr={'1rem'}
                 onClick={()=>{
                   setComm({...temp})
+                  const ind = Task.comments.findIndex((item)=>{
+                    return item.id === comment.id
+                  })
+                  let comments = Task.comments
+                  comments[ind] = comm
+                  setTask({...Task,comments:comments})
                   setInEditMode(false)
                 }}
               >
@@ -137,7 +144,7 @@ function Comment({comment}) {
     </HStack>
     {
       openDeletePrompt && (
-        <DeletePrompt type={'comment'} setOpenDeletePrompt={setOpenDeletePrompt} />
+        <DeletePrompt type={'comment'} setOpenDeletePrompt={setOpenDeletePrompt} valueId={comm.id} list={Task} setList={setTask} />
       )
     }
     </>
