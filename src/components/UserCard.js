@@ -13,7 +13,7 @@ function UserCard({user,type,...rest}) {
         px={'0.6rem'}
         cursor={'pointer'}
         borderRadius={'0.3rem'}
-        _hover={{
+        _hover={ type !== "menuItem" && {
           backgroundColor: '#dfe1e6'
         }}
         {...rest}

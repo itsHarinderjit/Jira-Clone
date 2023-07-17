@@ -6,14 +6,19 @@ import UserCard from '../UserCard'
 import ButtonMod from '../ButtonMod'
 import { useDispatch, useSelector } from 'react-redux'
 import { changeProjectInfo } from '../../redux/slice'
-import DeletePrompt from '../DeletePrompt'
 
 function ProjSettings() {
     const [project,setProject] = useState(useSelector((state)=>state.data.currProject))
-    const users = useSelector((state)=>state.data.projectUsers)
+    const [users,setUsers] = useState(useSelector((state)=>state.data.projectUsers))
+    const allUsers = useSelector((state)=>state.data.allUsers)
+    const keys = Object.keys(allUsers)
+    let data = []
+    for(let x in keys) {
+        if(!project.users.includes(allUsers[keys[x]].id))
+            data.push(allUsers[keys[x]])
+    }
+    const [remainingUsers,setRemainingUsers] = useState(data)
     const currentUser = useSelector((state)=>state.data.user)
-    const [openDeletePrompt,setOpenDeletePrompt] = useState(false)
-    const [clickedUser,setClickedUser] = useState('')
     const dispatch = useDispatch()
     const toast = useToast()
     const allCategories = ["software","marketing","bussiness","management"]
@@ -38,8 +43,28 @@ function ProjSettings() {
                 })
                 return
             }
-            setClickedUser(member.id)
-            setOpenDeletePrompt(true)
+            const ind = users.findIndex((item)=> {
+                return item.id === member.id
+            })
+            setRemainingUsers([...remainingUsers,users[ind]])
+            let newArr = [...users]
+            newArr.splice(ind,1)
+            setUsers(newArr)
+            setProject({...project,users:users.map((item)=>{
+                return item.id
+            })})
+        }
+        else {
+            const ind = remainingUsers.findIndex((item)=> {
+                return item.id === member.id
+            })
+            setUsers([...users,remainingUsers[ind]])
+            let newArr = [...remainingUsers]
+            newArr.splice(ind,1)
+            setRemainingUsers(newArr)
+            setProject({...project,users:users.map((item)=>{
+                return item.id
+            })})
         }
     }
   return (
@@ -240,19 +265,45 @@ function ProjSettings() {
                     }}
                     pt={'0.5rem'}
                 >
-                    <FontAwesomeIcon icon={faPlus} size='xs'
-                        style={{
-                            marginTop: '0.15rem'
-                        }}
-                    />
-                    <Text
-                        fontSize={'xs'}
-                        fontWeight={'bold'}
-                        whiteSpace={'nowrap'}
-                        ml={'0.25rem'}
-                    >
-                        Add more
-                    </Text>
+                    <Menu>
+                        <MenuButton>
+                            <Box
+                                display={'flex'}
+                                flexWrap={'nowrap'}
+                                pb={'0.5rem'}
+                            >
+                                <FontAwesomeIcon icon={faPlus} size='xs'
+                                    style={{
+                                        marginTop: '0.15rem'
+                                    }}
+                                />
+                                <Text
+                                    fontSize={'xs'}
+                                    fontWeight={'bold'}
+                                    whiteSpace={'nowrap'}
+                                    ml={'0.25rem'}
+                                >
+                                    Add more
+                                </Text>
+                            </Box>
+                        </MenuButton>
+                        <MenuList>
+                            {
+                                remainingUsers.map((user)=>{
+                                    return (
+                                        <MenuItem
+                                            _hover={{
+                                                backgroundColor: '#d8e4fc'
+                                            }}
+                                            onClick={()=>handleMemberChange('add',user)}
+                                        >
+                                            <UserCard user={user} type={'menuItem'} key={user.id} backgroundColor={'transparent'} />
+                                        </MenuItem>
+                                    )
+                                })
+                            }
+                        </MenuList>
+                    </Menu>
                 </Box>
             </Box>
             <Box
@@ -260,7 +311,8 @@ function ProjSettings() {
                 onClick={()=> {
                     dispatch(changeProjectInfo({
                         id: project.id,
-                        value: project
+                        value: project,
+                        users: users
                     }))
                     toast({
                         title: 'Changes saved successfully',
@@ -275,9 +327,6 @@ function ProjSettings() {
             </Box>
         </VStack>
     </Box>
-    {
-        openDeletePrompt && <DeletePrompt type={'user'} setOpenDeletePrompt={setOpenDeletePrompt} valueId={clickedUser} />
-    }
     </>
   )
 }

@@ -197,6 +197,7 @@ export const Projects = {
     P002: {
         id: 'P002',
         name: 'Triwizard Tournament',
+        description: '',
         users: [
             "U004",
             "U007",
@@ -232,7 +233,8 @@ export const Projects = {
                 status: "done",
                 reporter: "U003",
                 assignees: [
-                    "U007"
+                    "U007",
+                    "U004"
                 ],
                 priority: "highest",
                 orgEstTime: 10,

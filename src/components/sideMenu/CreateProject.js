@@ -1,31 +1,39 @@
 import { Box,Text, VStack, FormControl, FormLabel, Input, FormErrorMessage, Textarea, FormHelperText, Menu, MenuButton, Button, MenuList, MenuItem, useToast } from '@chakra-ui/react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleDown, faPlus } from '@fortawesome/free-solid-svg-icons'
 import UserCard from '../UserCard'
 import ButtonMod from '../ButtonMod'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { addProject } from '../../redux/slice'
+import uuid from 'react-uuid'
 
 function CreateProject({setOpenProjectModel}) {
     const toast = useToast()
+    const currentUser = useSelector((state)=>state.data.user)
     const dispatch = useDispatch()
     const [project,setProject] = useState({
-        id: 'P003',
+        id: uuid(),
         name: ' ',
         description: "",
         users: [
-
+            currentUser.id
         ],
         tasks: {
 
         },
         type: "software",
-        members: [
-            
-        ],
         projectImg: ''
     })
+    const data = useSelector((state)=>state.data.allUsers)
+    let arr = []
+    for(const key in data) {
+        if(data[key].id === currentUser.id)
+            continue
+        arr.push(data[key])
+    }
+    const [users,setUsers] = useState([currentUser])
+    const [remainingUsers,setRemainingUsers] = useState(arr)
     const allCategories = ["software","marketing","bussiness","management"]
     function handleInputChange(e) {
         const componentId = e.target.id
@@ -38,14 +46,45 @@ function CreateProject({setOpenProjectModel}) {
     }
     function handleMemberChange(type,member) {
         if(type === 'remove') {
-            const newMembers = project.members
-            const ind = newMembers.indexOf(member)
-            if(ind > -1) {
-                newMembers.splice(ind,1)
+            if(currentUser.id === member.id) {
+                toast({
+                    title: 'You cannot remove yourself',
+                    status: 'error',
+                    duration: 3000,
+                    isClosable: true,
+                    position: 'top-right'
+                })
+                return
             }
-            setProject({...project,members:newMembers})
+            const ind = users.findIndex((item)=> {
+                return item.id === member.id
+            })
+            setRemainingUsers([...remainingUsers,users[ind]])
+            let newArr = [...users]
+            newArr.splice(ind,1)
+            setUsers(newArr)
+            setProject({...project,users:users.map((item)=>{
+                return item.id
+            })})
+        }
+        else {
+            const ind = remainingUsers.findIndex((item)=> {
+                return item.id === member.id
+            })
+            setUsers([...users,remainingUsers[ind]])
+            let newArr = [...remainingUsers]
+            newArr.splice(ind,1)
+            setRemainingUsers(newArr)
+            setProject({...project,users:users.map((item)=>{
+                return item.id
+            })})            
         }
     }
+    useEffect(()=>{
+        setProject({...project,users:users.map((item)=>{
+            return item.id
+        })})
+    },[users,project])
   return (
     <Box
         height={'100vh'}
@@ -224,7 +263,7 @@ function CreateProject({setOpenProjectModel}) {
                 flexWrap={'wrap'}
             >
                 {
-                    project.members.map((member)=> {
+                    users.map((member)=> {
                         return (
                             <Box
                                 onClick={()=>handleMemberChange('remove',member)}
@@ -234,31 +273,46 @@ function CreateProject({setOpenProjectModel}) {
                         )
                     })
                 }
-                <Box
-                    display={'flex'}
-                    flexDirection={'row'}
-                    ml={'0.5rem'}
-                    cursor={'pointer'}
-                    color={'#0052cc'}
-                    _hover={{
-                        textDecoration: 'underline'
-                    }}
-                    pt={'0.5rem'}
-                >
-                    <FontAwesomeIcon icon={faPlus} size='xs'
-                        style={{
-                            marginTop: '0.15rem'
-                        }}
-                    />
-                    <Text
-                        fontSize={'xs'}
-                        fontWeight={'bold'}
-                        whiteSpace={'nowrap'}
-                        ml={'0.25rem'}
-                    >
-                        Add more
-                    </Text>
-                </Box>
+                <Menu>
+                    <MenuButton>
+                        <Box
+                            display={'flex'}
+                            flexWrap={'nowrap'}
+                            pb={'0.5rem'}
+                            color={'#0052cc'}
+                        >
+                            <FontAwesomeIcon icon={faPlus} size='xs'
+                                style={{
+                                    marginTop: '0.15rem'
+                                }}
+                            />
+                            <Text
+                                fontSize={'xs'}
+                                fontWeight={'bold'}
+                                whiteSpace={'nowrap'}
+                                ml={'0.25rem'}
+                            >
+                                Add more
+                            </Text>
+                        </Box>
+                    </MenuButton>
+                    <MenuList>
+                        {
+                            remainingUsers.map((user)=>{
+                                return (
+                                    <MenuItem
+                                        _hover={{
+                                            backgroundColor: '#d8e4fc'
+                                        }}
+                                        onClick={()=>handleMemberChange('add',user)}
+                                    >
+                                        <UserCard user={user} type={'menuItem'} key={user.id} backgroundColor={'transparent'} />
+                                    </MenuItem>
+                                )
+                            })
+                        }
+                    </MenuList>
+                </Menu>
             </Box>
             <Box
                 display={'flex'}

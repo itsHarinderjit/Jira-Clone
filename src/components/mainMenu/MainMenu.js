@@ -3,15 +3,10 @@ import React, { useState } from 'react'
 import MenuButtons from './MenuButtons'
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faClapperboard,faGear,faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faClapperboard,faGear,faListCheck,faPlus } from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
 
 function MainMenu() {
-    // const project = {
-    //     name: 'Jira-rice 2.0',
-    //     type: 'software',
-    //     src: img
-    // }
     const [clickedLink,setClickedLink] = useState('KBoard')
     const color = '#5d6064'
     const selectedColor = '#0052cc'
@@ -39,7 +34,13 @@ function MainMenu() {
             <HStack
                 mb={'1.75rem'}
             >
-                <Image src={project.projectImg} alt='Project logo' height={'2.8rem'} width={'2.8rem'} borderRadius={'0.25rem'}/>
+                {
+                    project.projectImg === '' ? (
+                        <FontAwesomeIcon icon={faListCheck} size='2xl'/>
+                    ) : (
+                            <Image src={project.projectImg} alt='Project logo' height={'2.8rem'} width={'2.8rem'} borderRadius={'0.25rem'}/>
+                    )
+                }
                 <VStack
                     alignItems={'left'}
                     pl={'0.5rem'}

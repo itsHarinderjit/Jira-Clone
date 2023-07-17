@@ -130,13 +130,40 @@ function TaskModel({task,setModelOpen}) {
     function handleMenuClick(property,type) {
         setTask({...Task,[property]:type})
     }
-    const assignees = useSelector((state)=>state.data.projectUsers).filter((user)=> {
+    let assignees = useSelector((state)=>state.data.projectUsers).filter((user)=> {
         return Task.assignees.includes(user.id)
+    })
+    let remainingUsers = useSelector((state)=>state.data.projectUsers).filter((user)=>{
+        return !Task.assignees.includes(user.id)
     })
     const reporter = useSelector((state)=>state.data.projectUsers).filter((user)=>{
         return Task.reporter === user.id
     })[0]
     const currUser = useSelector((state)=>state.data.user)
+    function handleUserChange(type,user) {
+        if(type === 'remove') {
+            const id = user.id
+            const ind = assignees.findIndex((item)=>{
+                return item.id === id
+            })
+            remainingUsers.push(assignees[ind])
+            assignees.splice(ind,1)
+            setTask({...Task,assignees:assignees.map((item)=> {
+                return item.id
+            })})
+        }
+        else {
+            const id = user.id
+            const ind = remainingUsers.findIndex((item)=> {
+                return item.id === id
+            })
+            assignees.push(remainingUsers[ind])
+            remainingUsers.splice(ind,1)
+            setTask({...Task,assignees:assignees.map((item)=> {
+                return item.id
+            })})
+        }
+    }
   return (
     <Box
         zIndex={1000}
@@ -178,8 +205,9 @@ function TaskModel({task,setModelOpen}) {
                             {getIconOption(getTypeIcon(Task.type),Task.type,Task.id,{transform:'uppercase',weight:'medium',isTop:true})}
                         </MenuButton>
                         <MenuList
-                            minWidth={'10rem'}
-                            
+                            minWidth={'10rem'}  
+                            position={'relative'}
+                            left={'-8rem'} 
                         >
                             {
                                 allTypes.map((type)=> {
@@ -465,7 +493,7 @@ function TaskModel({task,setModelOpen}) {
                                     {
                                         assignees.map((user)=> {
                                             return (
-                                                <UserCard user={user} type={'assignee'} mb={'0.25rem'}/>
+                                                <UserCard user={user} type={'assignee'} mb={'0.25rem'} onClick={()=>handleUserChange('remove',user)}/>
                                             )
                                         })
                                     }
@@ -480,38 +508,89 @@ function TaskModel({task,setModelOpen}) {
                                         }}
                                         pt={'0.5rem'}
                                     >
-                                        <FontAwesomeIcon icon={faPlus} size='xs'
-                                            style={{
-                                                marginTop: '0.15rem'
-                                            }}
-                                        />
-                                        <Text
-                                            fontSize={'xs'}
-                                            fontWeight={'bold'}
-                                            whiteSpace={'nowrap'}
-                                            ml={'0.25rem'}
-                                        >
-                                            Add more
-                                        </Text>
+                                        <Menu>
+                                            <MenuButton>
+                                                <Box
+                                                    display={'flex'}
+                                                    flexWrap={'nowrap'}
+                                                    pb={'0.5rem'}
+                                                >
+                                                    <FontAwesomeIcon icon={faPlus} size='xs'
+                                                        style={{
+                                                            marginTop: '0.15rem'
+                                                        }}
+                                                    />
+                                                    <Text
+                                                        fontSize={'xs'}
+                                                        fontWeight={'bold'}
+                                                        whiteSpace={'nowrap'}
+                                                        ml={'0.25rem'}
+                                                    >
+                                                        Add more
+                                                    </Text>
+                                                </Box>
+                                            </MenuButton>
+                                            <MenuList
+                                            >
+                                                {
+                                                    remainingUsers.map((user)=>{
+                                                        return (
+                                                            <MenuItem
+                                                                _hover={{
+                                                                    backgroundColor: '#d8e4fc'
+                                                                }}
+                                                                onClick={()=>handleUserChange('add',user)}
+                                                            >
+                                                                 <UserCard user={user} type={'menuItem'} key={user.id} backgroundColor={'transparent'} />
+                                                            </MenuItem>
+                                                        )
+                                                    })
+                                                }
+                                            </MenuList>
+                                        </Menu>
                                     </Box>
                                 </Box>
                             ) : (
-                                <Button
-                                    backgroundColor={'white'}
-                                    border={'none'}
-                                    fontWeight={'medium'}
-                                    color={'gray.500'}
-                                    fontSize={'0.8rem'}
-                                    height={'auto'}
-                                    float={'left'}
-                                    width={'4.4rem'}
-                                    p={0}
-                                    justifyContent={'left'}
-                                    alignItems={'left'}
-                                    _hover={'none'}
-                                >
-                                    Unassigned
-                                </Button>
+                                <Menu>
+                                    <MenuButton
+                                        as={Button}
+                                        backgroundColor={'white'}
+                                        border={'none'}
+                                        fontWeight={'medium'}
+                                        color={'gray.500'}
+                                        fontSize={'0.8rem'}
+                                        height={'auto'}
+                                        float={'left'}
+                                        width={'4.4rem'}
+                                        py={'0.25rem'}
+                                        px={0}
+                                        justifyContent={'left'}
+                                        alignItems={'left'}
+                                        _hover={'none'}
+                                        _focus={'none'}
+                                    >
+                                        Unassigned   
+                                    </MenuButton>
+                                    <MenuList
+                                        p={0}
+                                    >
+                                        {
+                                            remainingUsers.map((user)=>{
+                                                return (
+                                                    <MenuItem
+                                                        width={'23rem'}
+                                                        _hover={{
+                                                            backgroundColor: '#d8e4fc'
+                                                        }}
+                                                        onClick={()=>handleUserChange('add',user)}
+                                                    >
+                                                        <UserCard user={user} type={'menuItem'} key={user.id} backgroundColor={'transparent'} />
+                                                    </MenuItem>
+                                                )
+                                            })
+                                        }
+                                    </MenuList>
+                                </Menu>
                             )
                         }
                         <Text
