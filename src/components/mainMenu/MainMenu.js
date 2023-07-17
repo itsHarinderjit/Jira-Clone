@@ -63,14 +63,14 @@ function MainMenu() {
                     </Text>
                 </VStack>
             </HStack>
-            <Link to="/board" onClick={()=>{setClickedLink('KBoard')}}>
+            <Link to="/user/board" onClick={()=>{setClickedLink('KBoard')}}>
                 <MenuButtons heading={'kanban board'} isSelected={clickedLink === 'KBoard'} icon={boardIcon}/>
             </Link>
-            <Link to="/settings" onClick={()=>{setClickedLink('PSettings')}}>
+            <Link to="/user/settings" onClick={()=>{setClickedLink('PSettings')}}>
                 <MenuButtons heading={'project settings'} isSelected={clickedLink === 'PSettings'} icon={settingIcon}/>
             </Link>
             <Divider borderWidth={'1px'} mt={'1rem'} borderColor={'blackAlpha.400'} mb={'1rem'} />
-            <Link to="/createIssue" onClick={()=>{setClickedLink('CIssue')}}>
+            <Link to="/user/createIssue" onClick={()=>{setClickedLink('CIssue')}}>
                 <MenuButtons heading={'Create issue'} isSelected={clickedLink === 'CIssue'} icon={addIcon}/>
             </Link>
         </VStack>

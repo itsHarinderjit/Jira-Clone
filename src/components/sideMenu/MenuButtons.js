@@ -6,7 +6,7 @@ import { faPlus,faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icon
 function MenuButtons({usedfor,...rest}) {
     let text;
     if(usedfor==='add')
-        text = 'add project'
+        text = 'create project'
     else if(usedfor==='delete')
         text = 'delete project'
     else  

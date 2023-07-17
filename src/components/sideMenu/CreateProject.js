@@ -274,12 +274,16 @@ function CreateProject({setOpenProjectModel}) {
                     })
                 }
                 <Menu>
-                    <MenuButton>
+                    <MenuButton
+                        color={'#0052cc'}
+                        _hover={{
+                            textDecoration: 'underline'
+                        }}
+                    >
                         <Box
                             display={'flex'}
                             flexWrap={'nowrap'}
-                            pb={'0.5rem'}
-                            color={'#0052cc'}
+                            pl={'0.25rem'}
                         >
                             <FontAwesomeIcon icon={faPlus} size='xs'
                                 style={{

@@ -30,6 +30,13 @@ const slice = createSlice({
     name: 'data',
     initialState: initialValue, 
     reducers: {
+        changeCurrentUser(state,action) {
+            state.user = action.payload
+            const data = getData(action.payload)
+            state.projects = data.projects
+            state.currProject = data.projects[0]
+            state.projectUsers = data.users
+        },
         changeCurrentProject(state,action) {
             state.currProject = state.projects.filter((item)=>{
                 return item.id === action.payload
@@ -87,5 +94,5 @@ const slice = createSlice({
 })
 
 
-export const { changeCurrentProject,changeTaskInfo,changeProjectInfo,addIssue,addProject,deleteIssue,changeStatus } = slice.actions
+export const { changeCurrentProject,changeTaskInfo,changeProjectInfo,addIssue,addProject,deleteIssue,changeStatus,changeCurrentUser } = slice.actions
 export default slice.reducer

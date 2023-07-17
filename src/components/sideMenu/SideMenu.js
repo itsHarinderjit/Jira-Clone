@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import {Avatar, Box, HStack, Img, Link, VStack, Text, Divider} from '@chakra-ui/react'
+import {Avatar, Box, HStack, Img, VStack, Text, Divider} from '@chakra-ui/react'
+import { Link } from 'react-router-dom'
 import logo from '../../res/logo.svg'
 import MenuButtons from './MenuButtons'
 import MenuAvatars from './MenuAvatars'
@@ -36,15 +37,7 @@ function SideMenu() {
           ml={'0'}
           alignItems={'left'}
         >
-
-          <Link 
-            href='#'
-            ml={0}
-            pl={'1rem'}
-          >
-            <Img src={logo} alt='logo' height={'2rem'} width={'2rem'} />
-          </Link>
-
+          <Img src={logo} alt='logo' height={'2rem'} width={'3rem'} pl={'1rem'} />
           <HStack
             spacing={'1rem'}
             pl={'1rem'}
@@ -79,7 +72,9 @@ function SideMenu() {
 
           <MenuButtons usedfor={'add'} onClick={()=>setOpenProjectModel(true)} />
 
-          <MenuButtons usedfor={'logOut'}/>
+          <Link to='/' >
+            <MenuButtons usedfor={'logOut'}/>
+          </Link>
 
         </VStack>
     </Box>

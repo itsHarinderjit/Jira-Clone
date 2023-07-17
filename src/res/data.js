@@ -10,6 +10,7 @@ import ProfSnape from './userImg/ProfSnape.jpg'
 import RonWeasley from './userImg/RonWeasley.jpg'
 import Hogwards from './projImg/Hogwards.jpg'
 import gobletOfFire from './projImg/gobletOfFire.jpg'
+import HPF from './projImg/HP&F.jpg'
 
 export const Users = {
     U001: {
@@ -17,13 +18,16 @@ export const Users = {
         name: "Professor McGonagall",
         projects: [
             "P001",
+            "P002"
         ],
         userImg: ProfMcGonagall
     },
     U002: {
         id: 'U002',
         name: "Professor Flitwick",
-        projects: [],
+        projects: [
+            "P002"
+        ],
         userImg: ProfFlitwick
     },
     U003: {
@@ -31,6 +35,7 @@ export const Users = {
         name: "Professor Snape",
         projects: [
             "P001",
+            "P002"
         ],
         userImg: ProfSnape
     },
@@ -62,27 +67,59 @@ export const Users = {
     U007: {
         id: 'U007',
         name: "Moody",
-        projects: [],
+        projects: [
+            "P002"
+        ],
         userImg: Moody
     },
     U008: {
         id: 'U008',
         name: "Harry Potter",
-        projects: [],
+        projects: [
+            "P003"
+        ],
         userImg: HarryPotter
     },
     U009: {
         id: 'U009',
         name: "Ron Weasley",
-        projects: [],
+        projects: [
+            "P003"
+        ],
         userImg: RonWeasley
     },
     U010: {
         id: 'U010',
         name: "Hermione Granger",
-        projects: [],
+        projects: [
+            "P003"
+        ],
         userImg: HermioneGranger
-    }
+    },
+    U011: {
+        id: 'U011',
+        name: 'John Smith',
+        projects: [
+            "P004"
+        ],
+        userImg: ''
+    },
+    U012: {
+        id: 'U012',
+        name: 'David Thompson',
+        projects: [
+            "P004"
+        ],
+        userImg: ''
+    },
+    U013: {
+        id: 'U013',
+        name: 'Emily Johnson',
+        projects: [
+            "P004"
+        ],
+        userImg: ''
+    },
 }
 
 export const Projects = {
@@ -188,6 +225,43 @@ export const Projects = {
                 timeRemaining: null,
                 createdOn: new Date("7/2/2023").toString(),
                 updatedOn: new Date("7/2/2023").toString(),
+                comments: []
+            },
+            HP006: {
+                id: 'HP006',
+                heading: "Hogwarts Acceptance Letters Delivery Issue",
+                description: "There have been reports of Hogwarts acceptance letters not reaching the intended recipients. We need to investigate the issue, identify any disruptions in the delivery process, and ensure all eligible students receive their letters promptly.",
+                type: "task",
+                status: "selected",
+                reporter: "U004",
+                assignees: [
+                    "U001"
+                ],
+                priority: "high",
+                orgEstTime: 8,
+                timeSpent: 3,
+                timeRemaining: null,
+                createdOn: new Date("5/2/2023").toString(),
+                updatedOn: new Date("5/2/2023").toString(),
+                comments: []
+            },
+            HP007: {
+                id: 'HP007',
+                heading: "Organize Orientation for First-Year Students",
+                description: "The first-year students need an orientation program to familiarize them with the Hogwarts castle, classes, and rules. We need to plan and organize a comprehensive orientation schedule.",
+                type: "task",
+                status: "in progress",
+                reporter: "U004",
+                assignees: [
+                    "U003",
+                    "U001"
+                ],
+                priority: "low",
+                orgEstTime: 2,
+                timeSpent: 1,
+                timeRemaining: null,
+                createdOn: new Date("15/2/2023").toString(),
+                updatedOn: new Date("15/2/2023").toString(),
                 comments: []
             },
         },
@@ -298,11 +372,296 @@ export const Projects = {
                 createdOn: new Date("6/19/2023").toString(),
                 updatedOn: new Date("6/19/2023").toString(),
                 comments: []
+            },
+            GoF006: {
+                id: 'GoF006',
+                heading: "Research and Acquire Magical Creatures for the Third Task",
+                description: "The third task of the Triwizard Tournament involves encounters with dangerous magical creatures. We need to research suitable creatures, procure them, and ensure their proper handling and containment.",
+                type: "task",
+                status: "in progress",
+                reporter: "U003",
+                assignees: [
+                    "U007"
+                ],
+                priority: "high",
+                orgEstTime: 10,
+                timeSpent: 3,
+                timeRemaining: null,
+                createdOn: new Date("6/20/2023").toString(),
+                updatedOn: new Date("6/20/2023").toString(),
+                comments: []
             }
         },
         type: 'management',
         projectImg: gobletOfFire
-    }
+    },
+    P003: {
+        id: 'P003',
+        name: 'Friends Adventure',
+        description: '',
+        users: [
+            "U008",
+            "U009",
+            "U010"
+        ],
+        tasks: {
+            HP001: {
+                id: 'HP001',
+                heading: "Investigate the Disappearance of Hermione's Wand",
+                description: "Hermione Granger's wand has gone missing. We need to investigate the circumstances surrounding its disappearance, identify any potential suspects, and recover the wand.",
+                type: "task",
+                status: "selected",
+                reporter: "U010",
+                assignees: [
+                    "U008",
+                    "U009"
+                ],
+                priority: "high",
+                orgEstTime: 10,
+                timeSpent: 4,
+                timeRemaining: null,
+                createdOn: new Date("7/15/2023").toString(),
+                updatedOn: new Date("7/15/2023").toString(),
+                comments: []
+            },
+            HP002: {
+                id: 'HP002',
+                heading: "Organize Study Group for Defense Against the Dark Arts",
+                description: "Harry, Ron, and Hermione need to form a study group to improve their Defense Against the Dark Arts skills. We need to schedule regular study sessions, select appropriate study materials, and coordinate the group's activities.",
+                type: "task",
+                status: "in progress",
+                reporter: "U010",
+                assignees: [
+                    "U008",
+                    "U009",
+                    "U010"
+                ],
+                priority: "medium",
+                orgEstTime: 48,
+                timeSpent: 5,
+                timeRemaining: null,
+                createdOn: new Date("6/16/2023").toString(),
+                updatedOn: new Date("6/16/2023").toString(),
+                comments: []
+            },
+            HP003: {
+                id: 'HP003',
+                heading: "Plan Hagrid's Birthday Surprise Party",
+                description: "It's Hagrid's birthday, and we want to throw him a surprise party. We need to organize the event, coordinate decorations, arrange for a cake, and keep the preparations confidential.",
+                type: "task",
+                status: "backlog",
+                reporter: "U008",
+                assignees: [
+                    "U008",
+                    "U009",
+                ],
+                priority: "low",
+                orgEstTime: 5,
+                timeSpent: 0,
+                timeRemaining: null,
+                createdOn: new Date("6/27/2023").toString(),
+                updatedOn: new Date("6/27/2023").toString(),
+                comments: []
+            },
+            HP004: {
+                id: 'HP004',
+                heading: "Research and Obtain New Quidditch Broomsticks",
+                description: "The Gryffindor Quidditch team needs new broomsticks for the upcoming season. We need to research the latest models, evaluate their performance, and procure the best broomsticks within the budget.",
+                type: "task",
+                status: "selected",
+                reporter: "U008",
+                assignees: [
+                    "U008"
+                ],
+                priority: "high",
+                orgEstTime: 4,
+                timeSpent: 1,
+                timeRemaining: null,
+                createdOn: new Date("6/15/2023").toString(),
+                updatedOn: new Date("6/15/2023").toString(),
+                comments: []
+            },
+            HP005: {
+                id: 'HP005',
+                heading: "Create a Care Plan for Norberta the Dragon",
+                description: "Hagrid has acquired a baby dragon named Norberta. We need to develop a care plan that includes feeding, training, and ensuring Norberta's well-being while keeping her existence a secret.",
+                type: "task",
+                status: "backlog",
+                reporter: "U010",
+                assignees: [
+                    "U009"
+                ],
+                priority: "medium",
+                orgEstTime: 3,
+                timeSpent: 1,
+                timeRemaining: null,
+                createdOn: new Date("6/19/2023").toString(),
+                updatedOn: new Date("6/19/2023").toString(),
+                comments: []
+            }
+        },
+        type: 'management',
+        projectImg: HPF
+    },
+    P004: {
+        id: 'P004',
+        name: 'Fitness Tracking Mobile App',
+        description: '',
+        users: [
+            "U011",
+            "U012",
+            "U013"
+        ],
+        tasks: {
+            FT001: {
+                id: 'FT001',
+                heading: "Design User Interface for Onboarding Screens",
+                description: "Create visually appealing and intuitive onboarding screens for the mobile app. Collaborate with the UI/UX designer to design the screens, implement the UI elements, and ensure a smooth user experience.",
+                type: "task",
+                status: "done",
+                reporter: "U012",
+                assignees: [
+                    "U011",
+                ],
+                priority: "high",
+                orgEstTime: 10,
+                timeSpent: 2,
+                timeRemaining: null,
+                createdOn: new Date("7/10/2023").toString(),
+                updatedOn: new Date("7/10/2023").toString(),
+                comments: []
+            },
+            FT002: {
+                id: 'FT002',
+                heading: "Integrate Push Notification Service",
+                description: "Integrate a push notification service into the mobile app to deliver real-time updates and notifications to users. Research available push notification providers, implement the necessary SDKs, and test the notification delivery.",
+                type: "task",
+                status: "selected",
+                reporter: "U011",
+                assignees: [
+                    "U012",
+                    "U013"
+                ],
+                priority: "medium",
+                orgEstTime: 8,
+                timeSpent: 6,
+                timeRemaining: null,
+                createdOn: new Date("7/12/2023").toString(),
+                updatedOn: new Date("7/12/2023").toString(),
+                comments: []
+            },
+            FT003: {
+                id: 'FT003',
+                heading: "Conduct Automated UI Testing",
+                description: "Set up automated UI testing for the mobile app to ensure its functionality and usability. Select a suitable testing framework, write test scripts, execute tests, and report any bugs or issues found during the testing process.",
+                type: "task",
+                status: "backlog",
+                reporter: "U012",
+                assignees: [
+                    "U013"
+                ],
+                priority: "low",
+                orgEstTime: 12,
+                timeSpent: 4,
+                timeRemaining: null,
+                createdOn: new Date("7/27/2023").toString(),
+                updatedOn: new Date("7/27/2023").toString(),
+                comments: []
+            },
+            FT004: {
+                id: 'FT004',
+                heading: "Enhance Workout Logging and Analytics",
+                description: "Improve the workout logging and analytics features of the app. Implement additional workout types, enhance data visualization, and provide comprehensive analytics to help users track their progress.",
+                type: "task",
+                status: "in progress",
+                reporter: "U012",
+                assignees: [
+                    "U013"
+                ],
+                priority: "medium",
+                orgEstTime: 9,
+                timeSpent: 3,
+                timeRemaining: null,
+                createdOn: new Date("7/15/2023").toString(),
+                updatedOn: new Date("7/15/2023").toString(),
+                comments: []
+            },
+            FT005: {
+                id: 'FT005',
+                heading: "Implement Social Sharing Functionality",
+                description: "Develop the ability for users to share their workout achievements and progress on social media platforms. Implement social media SDKs, authentication mechanisms, and user interface components for sharing functionalities.",
+                type: "task",
+                status: "in progress",
+                reporter: "U013",
+                assignees: [
+                    "U011"
+                ],
+                priority: "medium",
+                orgEstTime: 8,
+                timeSpent: 1,
+                timeRemaining: null,
+                createdOn: new Date("7/19/2023").toString(),
+                updatedOn: new Date("7/19/2023").toString(),
+                comments: []
+            },
+            FT006: {
+                id: 'FT006',
+                heading: "Fix Crash on Launch Issue for Android Devices",
+                description: "Investigate and resolve the issue where the app crashes on launch specifically for Android devices. Identify the root cause, debug the code, and implement the necessary fixes to ensure the app launches successfully on all Android devices.",
+                type: "bug",
+                status: "done",
+                reporter: "U012",
+                assignees: [
+                    "U011"
+                ],
+                priority: "highest",
+                orgEstTime: 4,
+                timeSpent: 4,
+                timeRemaining: null,
+                createdOn: new Date("7/10/2023").toString(),
+                updatedOn: new Date("7/10/2023").toString(),
+                comments: []
+            },
+            FT007: {
+                id: 'FT007',
+                heading: "Fix Incorrect Calorie Calculation for Certain Activities",
+                description: "Identify and fix the bug causing inaccurate calorie calculations for specific activities in the app. Review the algorithm, validate calculation formulas, and ensure precise and reliable calorie tracking for all supported activities.",
+                type: "bug",
+                status: "selected",
+                reporter: "U011",
+                assignees: [
+                    "U013"
+                ],
+                priority: "high",
+                orgEstTime: 5,
+                timeSpent: 4,
+                timeRemaining: null,
+                createdOn: new Date("7/12/2023").toString(),
+                updatedOn: new Date("7/12/2023").toString(),
+                comments: []
+            },
+            FT008: {
+                id: 'FT008',
+                heading: "Fix Bluetooth Connectivity Issue with Heart Rate Monitor",
+                description: "Investigate and resolve the issue causing intermittent connectivity problems with the heart rate monitor device via Bluetooth. Troubleshoot the connection, optimize Bluetooth communication, and ensure reliable and stable data transmission.",
+                type: "bug",
+                status: "backlog",
+                reporter: "U013",
+                assignees: [
+                    "U011"
+                ],
+                priority: "low",
+                orgEstTime: 6,
+                timeSpent: 1,
+                timeRemaining: null,
+                createdOn: new Date("7/14/2023").toString(),
+                updatedOn: new Date("7/14/2023").toString(),
+                comments: []
+            },
+        },
+        type: 'software',
+        projectImg: ''
+    },
 }
 
 // comment -> id,user,content,createdOn
