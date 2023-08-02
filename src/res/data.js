@@ -554,7 +554,7 @@ export const Projects = {
                 id: 'FT003',
                 heading: "Conduct Automated UI Testing",
                 description: "Set up automated UI testing for the mobile app to ensure its functionality and usability. Select a suitable testing framework, write test scripts, execute tests, and report any bugs or issues found during the testing process.",
-                type: "task",
+                type: "story",
                 status: "backlog",
                 reporter: "U012",
                 assignees: [
@@ -564,8 +564,8 @@ export const Projects = {
                 orgEstTime: 12,
                 timeSpent: 4,
                 timeRemaining: null,
-                createdOn: new Date("7/27/2023").toString(),
-                updatedOn: new Date("7/27/2023").toString(),
+                createdOn: new Date("7/7/2023").toString(),
+                updatedOn: new Date("7/7/2023").toString(),
                 comments: []
             },
             FT004: {
@@ -584,7 +584,21 @@ export const Projects = {
                 timeRemaining: null,
                 createdOn: new Date("7/15/2023").toString(),
                 updatedOn: new Date("7/15/2023").toString(),
-                comments: []
+                comments: [
+                    {
+                        id: 'CM004',
+                        user: {
+                            id: 'U011',
+                            name: 'John Smith',
+                            projects: [
+                                "P004"
+                            ],
+                            userImg: ''
+                        },
+                        content: 'I think we need to have a team meeting for this',
+                        createdOn: new Date("7/16/2023")
+                    }
+                ]
             },
             FT005: {
                 id: 'FT005',
@@ -600,8 +614,8 @@ export const Projects = {
                 orgEstTime: 8,
                 timeSpent: 1,
                 timeRemaining: null,
-                createdOn: new Date("7/19/2023").toString(),
-                updatedOn: new Date("7/19/2023").toString(),
+                createdOn: new Date("7/17/2023").toString(),
+                updatedOn: new Date("7/17/2023").toString(),
                 comments: []
             },
             FT006: {
@@ -620,7 +634,21 @@ export const Projects = {
                 timeRemaining: null,
                 createdOn: new Date("7/10/2023").toString(),
                 updatedOn: new Date("7/10/2023").toString(),
-                comments: []
+                comments: [
+                    {
+                        id: 'CM003',
+                        user: {
+                            id: 'U013',
+                            name: 'Emily Johnson',
+                            projects: [
+                                "P004"
+                            ],
+                            userImg: ''
+                        },
+                        content: 'Try renaming the app and changing the package name',
+                        createdOn: new Date("7/14/2023").toString()
+                    }
+                ]
             },
             FT007: {
                 id: 'FT007',
@@ -638,7 +666,21 @@ export const Projects = {
                 timeRemaining: null,
                 createdOn: new Date("7/12/2023").toString(),
                 updatedOn: new Date("7/12/2023").toString(),
-                comments: []
+                comments: [
+                    {
+                        id: 'CM002',
+                        user: {
+                            id: 'U012',
+                            name: 'David Thompson',
+                            projects: [
+                                "P004"
+                            ],
+                            userImg: ''
+                        },
+                        content: 'Activities can be of different types and can have different methods of calculating calories',
+                        createdOn: new Date("7/15/2023").toString()
+                    }
+                ]
             },
             FT008: {
                 id: 'FT008',
@@ -656,7 +698,21 @@ export const Projects = {
                 timeRemaining: null,
                 createdOn: new Date("7/14/2023").toString(),
                 updatedOn: new Date("7/14/2023").toString(),
-                comments: []
+                comments: [
+                    {
+                        id: 'CM001',
+                        user: {
+                            id: 'U011',
+                            name: 'John Smith',
+                            projects: [
+                                "P004"
+                            ],
+                            userImg: ''
+                        },
+                        content: 'We can fix a meeting regarding this issue if everyone is fine with it',
+                        createdOn: new Date("7/16/2023").toString()
+                    }
+                ]
             },
         },
         type: 'software',

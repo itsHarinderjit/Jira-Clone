@@ -2,6 +2,7 @@ import { Avatar, HStack, VStack,Text, Box, Textarea } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import ButtonMod from '../ButtonMod'
 import DeletePrompt from '../DeletePrompt'
+import { useSelector } from 'react-redux'
 
 export function getNumberOfDays(dateStr) {
     const newDate = new Date()
@@ -14,6 +15,7 @@ function Comment({comment,Task,setTask}) {
   const [comm,setComm] = useState(comment)
   const [temp,setTemp] = useState(comment)
   const [openDeletePrompt,setOpenDeletePrompt] = useState(false)
+  const currUserId = useSelector((state)=>state.data.user.id)
   function handleChange(e) {
     const value = e.target.value
     const compId = e.target.id
@@ -65,31 +67,37 @@ function Comment({comment,Task,setTask}) {
               >
                 {comm.content}
               </Text>
-              <Text
-                display={'inline'}
-                color={'gray.500'}
-                fontSize={'0.85rem'}
-                mr={'0.5rem'}
-                cursor={'pointer'}
-                onClick={()=>setInEditMode(true)}
-                _hover={{
-                  textDecoration: 'underline'
-                }}
-              >
-                Edit
-              </Text>
-              <Text
-                display={'inline'}
-                color={'gray.500'}
-                fontSize={'0.85rem'}
-                cursor={'pointer'}
-                onClick={()=>setOpenDeletePrompt(true)}
-                _hover={{
-                  textDecoration: 'underline'
-                }}
-              >
-                Delete
-              </Text>
+              {
+                currUserId === comm.user.id && (
+                  <Box>
+                    <Text
+                      display={'inline'}
+                      color={'gray.500'}
+                      fontSize={'0.85rem'}
+                      mr={'0.5rem'}
+                      cursor={'pointer'}
+                      onClick={()=>setInEditMode(true)}
+                      _hover={{
+                        textDecoration: 'underline'
+                      }}
+                  >
+                    Edit
+                  </Text>
+                  <Text
+                    display={'inline'}
+                    color={'gray.500'}
+                    fontSize={'0.85rem'}
+                    cursor={'pointer'}
+                    onClick={()=>setOpenDeletePrompt(true)}
+                    _hover={{
+                      textDecoration: 'underline'
+                    }}
+                  >
+                    Delete
+                  </Text>
+                </Box>
+                )
+              }
             </Box>
           ) : (
             <Box

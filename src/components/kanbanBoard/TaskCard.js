@@ -125,7 +125,7 @@ function TaskCard({Task,list,listNumber,setList}) {
                     >
                         {
                             users.map((user)=> {
-                                return <Avatar src={user.userImg} name={user.name} boxSize={'1.75rem'} />
+                                return <Avatar src={user.userImg} name={user.name} boxSize={'2.2rem'} />
                             })
                         }
                     </AvatarGroup>
