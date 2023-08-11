@@ -1,7 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { Users,Projects } from "../res/data"
 
-function getData(user) {
+function getData(newUser) {
+    let val,user
+    if(newUser===undefined) {
+        val = JSON.parse(localStorage.getItem('JiraUser'))
+        user = val === null ? Users.U004 : val
+    }
+    else {
+        user = newUser
+    }
     const projects = user.projects
     let ans = []
     for(let x in projects) {
@@ -17,9 +25,9 @@ function getData(user) {
     }
 }
 
-const data = getData(Users.U004)
+const data = getData()
 const initialValue = {
-    user: Users.U004,
+    user: JSON.parse(localStorage.getItem('JiraUser')) === null ? Users.U004 : JSON.parse(localStorage.getItem('JiraUser')),
     allUsers: Users,
     projects: data.projects,
     currProject: data.projects[0],
@@ -33,6 +41,7 @@ const slice = createSlice({
         changeCurrentUser(state,action) {
             state.user = action.payload
             const data = getData(action.payload)
+            localStorage.setItem('JiraUser',JSON.stringify(state.user))
             state.projects = data.projects
             state.currProject = data.projects[0]
             state.projectUsers = data.users
