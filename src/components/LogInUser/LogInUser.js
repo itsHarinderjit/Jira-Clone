@@ -1,5 +1,5 @@
 import { Box,Text,Menu,MenuButton, MenuList, MenuItem, Button } from '@chakra-ui/react'
-import React, { useState } from 'react'
+import React, { useState,useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import UserCard from '../UserCard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -7,9 +7,11 @@ import { faAngleDown } from '@fortawesome/free-solid-svg-icons'
 import ButtonMod from '../ButtonMod'
 import { Link } from 'react-router-dom'
 import { changeCurrentUser } from '../../redux/slice'
+import { stompContext } from '../../App'
 
 function LogInUser() {
     const data = useSelector((state)=>state.data.allUsers)
+    const {stompClient,setStompClient} = useContext(stompContext)
     const dispatch = useDispatch()
     let arr = []
     for(const key in data) {
@@ -19,7 +21,7 @@ function LogInUser() {
     const [remainingUsers,setRemainingUses] = useState(arr.slice(1))
     function handleUserChange(user) {
         const ind = remainingUsers.findIndex((item)=>{
-            return item.id === user.id
+            return item.userId === user.userId
         })
         let newArr = remainingUsers
         newArr.splice(ind,1)
@@ -74,7 +76,7 @@ function LogInUser() {
                                         backgroundColor: '#d8e4fc'
                                     }}
                                     onClick={()=>handleUserChange(user)}
-                                    key={user.id}
+                                    key={user.userId}
                                 >
                                     <UserCard user={user} type={'menuItem'} backgroundColor={'transparent'} />
                                 </MenuItem>
@@ -84,8 +86,10 @@ function LogInUser() {
                 </MenuList>
             </Menu>
             <Link
-                to='/user/board'
-                onClick={()=>dispatch(changeCurrentUser(selectedUser))}
+                to='/loading'
+                // to='/'
+                // to='/user/board'
+                onClick={()=>dispatch(changeCurrentUser({selectedUser,stompClient,setStompClient}))}
             >
                 <ButtonMod type={'primary'} text={'Login'} width={'16rem'} mx={'4rem'} />
             </Link>

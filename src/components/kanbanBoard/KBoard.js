@@ -85,7 +85,8 @@ function KBoard() {
       height = rowHeight + 2.1 + (6.5*list[x].length)
   }
   return (
-    <Box
+    <>
+      <Box
         backgroundColor={'white'}
         position={'absolute'}
         left={'18.1rem'} 
@@ -143,6 +144,7 @@ function KBoard() {
           </HStack>
         </VStack>
     </Box>
+    </>
   )
 }
 

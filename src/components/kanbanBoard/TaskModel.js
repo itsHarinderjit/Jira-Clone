@@ -111,7 +111,7 @@ function TaskModel({task,setModelOpen}) {
     function handleCloseClick() {
         setModelOpen(false)
         dispatch(changeTaskInfo({
-            id: Task.id,
+            id: Task.taskId,
             value: {...Task}
         }))
     }
@@ -120,7 +120,7 @@ function TaskModel({task,setModelOpen}) {
     }
     function handleTaskChange(e) {
         const inputValue = e.target.value
-        const compId = e.target.id
+        const compId = e.target.taskId
         const property = compId.replace('TextBox','')
         setTask({...Task,[property]:inputValue})
         const component = document.getElementById(compId)
@@ -131,39 +131,45 @@ function TaskModel({task,setModelOpen}) {
         setTask({...Task,[property]:type})
     }
     let assignees = useSelector((state)=>state.data.projectUsers).filter((user)=> {
-        return Task.assignees.includes(user.id)
+        return Task.assignees.includes(user.userId)
     })
     let remainingUsers = useSelector((state)=>state.data.projectUsers).filter((user)=>{
-        return !Task.assignees.includes(user.id)
+        return !Task.assignees.includes(user.userId)
     })
     const reporter = useSelector((state)=>state.data.projectUsers).filter((user)=>{
-        return Task.reporter === user.id
+        return Task.reporter === user.userId
     })[0]
     const currUser = useSelector((state)=>state.data.user)
+    console.log("all : ",useSelector((state)=>state.data.projectUsers))
+    console.log("assignees : ",assignees)
+    console.log("remainingUsers : ",remainingUsers)
+    console.log("reporter : ",reporter)
+    console.log("currUser : ",currUser)
     function handleUserChange(type,user) {
         if(type === 'remove') {
-            const id = user.id
+            const id = user.userId
             const ind = assignees.findIndex((item)=>{
-                return item.id === id
+                return item.userId === id
             })
             remainingUsers.push(assignees[ind])
             assignees.splice(ind,1)
             setTask({...Task,assignees:assignees.map((item)=> {
-                return item.id
+                return item.userId
             })})
         }
         else {
-            const id = user.id
+            const id = user.userId
             const ind = remainingUsers.findIndex((item)=> {
-                return item.id === id
+                return item.userId === id
             })
             assignees.push(remainingUsers[ind])
             remainingUsers.splice(ind,1)
             setTask({...Task,assignees:assignees.map((item)=> {
-                return item.id
+                return item.userId
             })})
         }
     }
+    console.log(assignees)
   return (
     <Box
         zIndex={1000}
@@ -202,7 +208,7 @@ function TaskModel({task,setModelOpen}) {
                                 backgroundColor: '#ebecf0'
                             }}
                         >
-                            {getIconOption(getTypeIcon(Task.type),Task.type,Task.id,{transform:'uppercase',weight:'medium',isTop:true})}
+                            {getIconOption(getTypeIcon(Task.type),Task.type,Task.taskId,{transform:'uppercase',weight:'medium',isTop:true})}
                         </MenuButton>
                         <MenuList
                             minWidth={'10rem'}  
@@ -386,7 +392,7 @@ function TaskModel({task,setModelOpen}) {
                                             <Box
                                                 onClick={()=>{
                                                     let comment = {
-                                                        id: uuid().slice(0,8),
+                                                        commentId: uuid().slice(0,8),
                                                         user: currUser,
                                                         content: commentValue,
                                                         createdOn: new Date().toString()
@@ -414,7 +420,7 @@ function TaskModel({task,setModelOpen}) {
                             {
                                 Task.comments.map((comment)=> {
                                     return (
-                                        <Comment comment={comment} Task={Task} setTask={setTask} key={comment.id}/>
+                                        <Comment comment={comment} Task={Task} setTask={setTask} key={comment.commentId}/>
                                     )
                                 })
                             }
@@ -541,7 +547,7 @@ function TaskModel({task,setModelOpen}) {
                                                                 }}
                                                                 onClick={()=>handleUserChange('add',user)}
                                                             >
-                                                                 <UserCard user={user} type={'menuItem'} key={user.id} backgroundColor={'transparent'} />
+                                                                 <UserCard user={user} type={'menuItem'} key={user.userId} backgroundColor={'transparent'} />
                                                             </MenuItem>
                                                         )
                                                     })
@@ -584,7 +590,7 @@ function TaskModel({task,setModelOpen}) {
                                                         }}
                                                         onClick={()=>handleUserChange('add',user)}
                                                     >
-                                                        <UserCard user={user} type={'menuItem'} key={user.id} backgroundColor={'transparent'} />
+                                                        <UserCard user={user} type={'menuItem'} key={user.userId} backgroundColor={'transparent'} />
                                                     </MenuItem>
                                                 )
                                             })
@@ -714,7 +720,7 @@ function TaskModel({task,setModelOpen}) {
         </Box>
     </Box>
     {
-        openDeletePrompt && <DeletePrompt type={'issue'} setOpenDeletePrompt={setOpenDeletePrompt} valueId={Task.id} />
+        openDeletePrompt && <DeletePrompt type={'issue'} setOpenDeletePrompt={setOpenDeletePrompt} valueId={Task.taskId} />
     }
     {
         openTimerPrompt && <TimerPrompt setOpenTimerPrompt={setOpenTimerPrompt} Task={Task} handleTaskChange={handleTaskChange} />

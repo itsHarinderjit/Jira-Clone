@@ -14,7 +14,7 @@ import HPF from './projImg/HP&F.jpg'
 
 export const Users = {
     U001: {
-        id: 'U001',
+        userId: 'U001',
         name: "Professor McGonagall",
         projects: [
             "P001",
@@ -23,7 +23,7 @@ export const Users = {
         userImg: ProfMcGonagall
     },
     U002: {
-        id: 'U002',
+        userId: 'U002',
         name: "Professor Flitwick",
         projects: [
             "P002"
@@ -31,7 +31,7 @@ export const Users = {
         userImg: ProfFlitwick
     },
     U003: {
-        id: 'U003',
+        userId: 'U003',
         name: "Professor Snape",
         projects: [
             "P001",
@@ -40,7 +40,7 @@ export const Users = {
         userImg: ProfSnape
     },
     U004: {
-        id: 'U004',
+        userId: 'U004',
         name: "Professor Dumbledore",
         projects: [
             "P001",
@@ -49,7 +49,7 @@ export const Users = {
         userImg: ProfDumbledore
     },
     U005: {
-        id: 'U005',
+        userId: 'U005',
         name: "Flitch",
         projects: [
             "P001",
@@ -57,7 +57,7 @@ export const Users = {
         userImg: Flitch
     },
     U006: {
-        id: 'U006',
+        userId: 'U006',
         name: "Hagrid",
         projects: [
             "P001",
@@ -65,7 +65,7 @@ export const Users = {
         userImg: Hagrid
     },
     U007: {
-        id: 'U007',
+        userId: 'U007',
         name: "Moody",
         projects: [
             "P002"
@@ -73,7 +73,7 @@ export const Users = {
         userImg: Moody
     },
     U008: {
-        id: 'U008',
+        userId: 'U008',
         name: "Harry Potter",
         projects: [
             "P003"
@@ -81,7 +81,7 @@ export const Users = {
         userImg: HarryPotter
     },
     U009: {
-        id: 'U009',
+        userId: 'U009',
         name: "Ron Weasley",
         projects: [
             "P003"
@@ -89,7 +89,7 @@ export const Users = {
         userImg: RonWeasley
     },
     U010: {
-        id: 'U010',
+        userId: 'U010',
         name: "Hermione Granger",
         projects: [
             "P003"
@@ -97,7 +97,7 @@ export const Users = {
         userImg: HermioneGranger
     },
     U011: {
-        id: 'U011',
+        userId: 'U011',
         name: 'John Smith',
         projects: [
             "P004"
@@ -105,7 +105,7 @@ export const Users = {
         userImg: ''
     },
     U012: {
-        id: 'U012',
+        userId: 'U012',
         name: 'David Thompson',
         projects: [
             "P004"
@@ -113,7 +113,7 @@ export const Users = {
         userImg: ''
     },
     U013: {
-        id: 'U013',
+        userId: 'U013',
         name: 'Emily Johnson',
         projects: [
             "P004"

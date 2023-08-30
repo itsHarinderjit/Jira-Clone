@@ -16,7 +16,7 @@ function CreateIssue() {
     const currUser = useSelector((state)=>state.data.user)
     const dispatch = useDispatch()
     const [Task,setTask] = useState({
-        id: '',
+        taskId: '',
         heading: '',
         description: '',
         type: 'task',
@@ -480,7 +480,7 @@ function CreateIssue() {
                     onClick={()=> {
                         Task.createdOn = new Date().toString()
                         Task.updatedOn = new Date().toString()
-                        Task.id = uuid().slice(0,8)
+                        Task.taskId = uuid().slice(0,8)
                         toast({
                             title: 'Issue created successfully',
                             status: 'success',
