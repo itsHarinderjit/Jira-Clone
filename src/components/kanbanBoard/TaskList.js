@@ -40,7 +40,7 @@ function TaskList({heading,list,setList,listNumber,...rest}) {
         </Text>
         {
             list[listNumber].map((task)=> {
-                return <TaskCard Task={task} list={list} listNumber={listNumber} setList={setList} key={task.id}/> 
+                return <TaskCard Task={task} list={list} listNumber={listNumber} setList={setList} key={task.taskId}/> 
             })
         }
     </VStack>

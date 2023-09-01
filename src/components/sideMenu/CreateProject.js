@@ -1,5 +1,5 @@
 import { Box,Text, VStack, FormControl, FormLabel, Input, FormErrorMessage, Textarea, FormHelperText, Menu, MenuButton, Button, MenuList, MenuItem, useToast } from '@chakra-ui/react'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleDown, faPlus } from '@fortawesome/free-solid-svg-icons'
 import UserCard from '../UserCard'
@@ -7,17 +7,20 @@ import ButtonMod from '../ButtonMod'
 import { useDispatch, useSelector } from 'react-redux'
 import { addProject } from '../../redux/slice'
 import uuid from 'react-uuid'
+import { stompContext } from '../../App'
 
 function CreateProject({setOpenProjectModel}) {
+    // eslint-disable-next-line no-unused-vars
+    const {stompClient,setStompClient} = useContext(stompContext)
     const toast = useToast()
     const currentUser = useSelector((state)=>state.data.user)
     const dispatch = useDispatch()
     const [project,setProject] = useState({
-        id: uuid(),
+        projectId: uuid().substring(0,8),
         name: ' ',
         description: "",
         users: [
-            currentUser.id
+            currentUser.userId
         ],
         tasks: {
 
@@ -28,7 +31,7 @@ function CreateProject({setOpenProjectModel}) {
     const data = useSelector((state)=>state.data.allUsers)
     let arr = []
     for(const key in data) {
-        if(data[key].id === currentUser.id)
+        if(data[key].userId === currentUser.userId)
             continue
         arr.push(data[key])
     }
@@ -46,7 +49,7 @@ function CreateProject({setOpenProjectModel}) {
     }
     function handleMemberChange(type,member) {
         if(type === 'remove') {
-            if(currentUser.id === member.id) {
+            if(currentUser.userId === member.userId) {
                 toast({
                     title: 'You cannot remove yourself',
                     status: 'error',
@@ -57,32 +60,32 @@ function CreateProject({setOpenProjectModel}) {
                 return
             }
             const ind = users.findIndex((item)=> {
-                return item.id === member.id
+                return item.userId === member.userId
             })
             setRemainingUsers([...remainingUsers,users[ind]])
             let newArr = [...users]
             newArr.splice(ind,1)
             setUsers(newArr)
             setProject({...project,users:users.map((item)=>{
-                return item.id
+                return item.userId
             })})
         }
         else {
             const ind = remainingUsers.findIndex((item)=> {
-                return item.id === member.id
+                return item.userId === member.userId
             })
             setUsers([...users,remainingUsers[ind]])
             let newArr = [...remainingUsers]
             newArr.splice(ind,1)
             setRemainingUsers(newArr)
             setProject({...project,users:users.map((item)=>{
-                return item.id
+                return item.userId
             })})            
         }
     }
     useEffect(()=>{
         setProject({...project,users:users.map((item)=>{
-            return item.id
+            return item.userId
         })})
     },[users,project])
   return (
@@ -310,7 +313,7 @@ function CreateProject({setOpenProjectModel}) {
                                         }}
                                         onClick={()=>handleMemberChange('add',user)}
                                     >
-                                        <UserCard user={user} type={'menuItem'} key={user.id} backgroundColor={'transparent'} />
+                                        <UserCard user={user} type={'menuItem'} key={user.userId} backgroundColor={'transparent'} />
                                     </MenuItem>
                                 )
                             })
@@ -325,7 +328,11 @@ function CreateProject({setOpenProjectModel}) {
             >
             <Box
                 onClick={()=> {
-                    dispatch(addProject(project))
+                    dispatch(addProject({
+                        project: project,
+                        stompClient: stompClient,
+                        userName: currentUser.name
+                    }))
                     toast({
                         title: 'Project created successfully',
                         status: 'success',

@@ -22,7 +22,7 @@ function TopButton({heading,localState,localDispatch,setList,...rest}) {
             if(heading === 'only my issues') {
                 localDispatch({
                     type: 'assignee',
-                    value: [user.id]
+                    value: [user.userId]
                 })
             }
         }

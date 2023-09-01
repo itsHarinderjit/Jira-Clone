@@ -61,7 +61,7 @@ function SideMenu() {
           {
             projects.map((project)=> {
               return (
-                <MenuAvatars project={project} isSelected={project.id === currProject.id} onClick={()=>dispatch(changeCurrentProject(project.id))} key={project.id}/>
+                <MenuAvatars project={project} isSelected={project.projectId === currProject.projectId} onClick={()=>dispatch(changeCurrentProject(project.projectId))} key={project.projectId}/>
               );
             })
           }

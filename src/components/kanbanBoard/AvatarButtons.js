@@ -9,7 +9,7 @@ function AvatarButtons({member,localState,localDispatch,setList,...rest}) {
             setClicked(false)
             component.style.borderColor = 'transparent'
             let assignees = localState.filters.assignees
-            let ind = assignees.indexOf(member.id)
+            let ind = assignees.indexOf(member.userId)
             assignees.splice(ind,1)
             localDispatch({
                 type: "assignee",
@@ -20,7 +20,7 @@ function AvatarButtons({member,localState,localDispatch,setList,...rest}) {
             setClicked(true)
             component.style.borderColor = 'blue'
             let assignees = [...localState.filters.assignees]
-            assignees.push(member.id)
+            assignees.push(member.userId)
             localDispatch({
                 type: "assignee",
                 value: assignees

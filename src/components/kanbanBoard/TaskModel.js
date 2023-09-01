@@ -111,7 +111,7 @@ function TaskModel({task,setModelOpen}) {
     function handleCloseClick() {
         setModelOpen(false)
         dispatch(changeTaskInfo({
-            id: Task.taskId,
+            taskId: Task.taskId,
             value: {...Task}
         }))
     }
@@ -120,7 +120,7 @@ function TaskModel({task,setModelOpen}) {
     }
     function handleTaskChange(e) {
         const inputValue = e.target.value
-        const compId = e.target.taskId
+        const compId = e.target.id // not sure about this one
         const property = compId.replace('TextBox','')
         setTask({...Task,[property]:inputValue})
         const component = document.getElementById(compId)
@@ -169,7 +169,7 @@ function TaskModel({task,setModelOpen}) {
             })})
         }
     }
-    console.log(assignees)
+    // console.log(assignees)
   return (
     <Box
         zIndex={1000}

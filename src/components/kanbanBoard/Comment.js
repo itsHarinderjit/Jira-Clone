@@ -15,7 +15,7 @@ function Comment({comment,Task,setTask}) {
   const [comm,setComm] = useState(comment)
   const [temp,setTemp] = useState(comment)
   const [openDeletePrompt,setOpenDeletePrompt] = useState(false)
-  const currUserId = useSelector((state)=>state.data.user.id)
+  const currUserId = useSelector((state)=>state.data.user.userId)
   function handleChange(e) {
     const value = e.target.value
     const compId = e.target.id
@@ -68,7 +68,7 @@ function Comment({comment,Task,setTask}) {
                 {comm.content}
               </Text>
               {
-                currUserId === comm.user.id && (
+                currUserId === comm.user.userId && (
                   <Box>
                     <Text
                       display={'inline'}
@@ -126,12 +126,14 @@ function Comment({comment,Task,setTask}) {
                 onClick={()=>{
                   setComm({...temp})
                   const ind = Task.comments.findIndex((item)=>{
-                    return item.id === comment.id
+                    return item.commentId === comment.commentId
                   })
                   let comments = Task.comments
                   comments[ind] = comm
                   setTask({...Task,comments:comments})
                   setInEditMode(false)
+                  setComm('') // check this one
+                  setTemp('')
                 }}
               >
                 <ButtonMod type={'primary'} text={'save'} height={'2rem'} width={'3.75rem'} />
@@ -152,7 +154,7 @@ function Comment({comment,Task,setTask}) {
     </HStack>
     {
       openDeletePrompt && (
-        <DeletePrompt type={'comment'} setOpenDeletePrompt={setOpenDeletePrompt} valueId={comm.id} list={Task} setList={setTask} />
+        <DeletePrompt type={'comment'} setOpenDeletePrompt={setOpenDeletePrompt} valueId={comm.commentId} list={Task} setList={setTask} />
       )
     }
     </>

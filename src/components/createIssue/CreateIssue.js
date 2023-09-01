@@ -1,5 +1,5 @@
 import { Box, VStack,Text, Menu, MenuButton, MenuList, MenuItem, Button, FormControl, FormLabel, Input, FormHelperText, Textarea, Avatar, useToast } from '@chakra-ui/react'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { getIconOption } from '../kanbanBoard/TaskModel'
 import { getTypeIcon,getPriorityIcon } from '../kanbanBoard/TaskCard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -9,8 +9,11 @@ import ButtonMod from '../ButtonMod'
 import { useDispatch, useSelector } from 'react-redux'
 import { addIssue } from '../../redux/slice'
 import uuid from 'react-uuid'
+import { stompContext } from '../../App'
 
 function CreateIssue() {
+    // eslint-disable-next-line no-unused-vars
+    const {stompClient,setStompClient} = useContext(stompContext)
     const allUsers = useSelector((state)=>state.data.projectUsers)
     const projName = useSelector((state)=>state.data.currProject)['name']
     const currUser = useSelector((state)=>state.data.user)
@@ -488,8 +491,12 @@ function CreateIssue() {
                             isClosable: true,
                             position: 'top-right'
                         })
-                        dispatch(addIssue(Task))
+                        dispatch(addIssue({
+                            task: Task,
+                            stompClient: stompClient
+                        }))
                         setTask({
+                            taskId: '',
                             heading: '',
                             description: '',
                             type: 'task',

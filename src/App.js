@@ -9,7 +9,6 @@ import LogInUser from "./components/LogInUser/LogInUser";
 import { Client } from "@stomp/stompjs"
 import { createContext, useEffect, useState } from "react";
 import Loading from "./components/Loading";
-import { useDispatch } from "react-redux";
 
 export const stompContext = createContext()
 function App() {

@@ -33,7 +33,7 @@ function TaskCard({Task,list,listNumber,setList}) {
     const [modelOpen,setModelOpen] = useState(false)
     const task = Task
     const users = useSelector((state)=>state.data.projectUsers).filter((user)=>{
-        return task.assignees.includes(user.id)
+        return task.assignees.includes(user.userId)
     })
     const dispatch = useDispatch()
     const [{isDragging},drag] = useDrag(()=> ({
@@ -55,7 +55,7 @@ function TaskCard({Task,list,listNumber,setList}) {
             else    
                 newStatus = "done"
             dispatch(changeStatus({
-                id: Task.id,
+                taskId: Task.taskId,
                 newStatus: newStatus
             }))
             let newList = list

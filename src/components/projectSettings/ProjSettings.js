@@ -1,20 +1,23 @@
 import { VStack,Text, Box, FormControl, FormLabel, Input, FormErrorMessage, Textarea, FormHelperText, Menu, MenuButton, MenuList, MenuItem, Button, useToast } from '@chakra-ui/react'
 import { faAngleDown, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import UserCard from '../UserCard'
 import ButtonMod from '../ButtonMod'
 import { useDispatch, useSelector } from 'react-redux'
 import { changeProjectInfo } from '../../redux/slice'
+import { stompContext } from '../../App'
 
 function ProjSettings() {
     const [project,setProject] = useState(useSelector((state)=>state.data.currProject))
     const [users,setUsers] = useState(useSelector((state)=>state.data.projectUsers))
     const allUsers = useSelector((state)=>state.data.allUsers)
+    // eslint-disable-next-line no-unused-vars
+    const {stompClient,setStompClient} = useContext(stompContext)
     const keys = Object.keys(allUsers)
     let data = []
     for(let x in keys) {
-        if(!project.users.includes(allUsers[keys[x]].id))
+        if(!project.users.includes(allUsers[keys[x]].userId))
             data.push(allUsers[keys[x]])
     }
     const [remainingUsers,setRemainingUsers] = useState(data)
@@ -33,7 +36,7 @@ function ProjSettings() {
     }
     function handleMemberChange(type,member) {
         if(type === 'remove') {
-            if(currentUser.id === member.id) {
+            if(currentUser.userId === member.userId) {
                 toast({
                     title: 'You cannot remove yourself',
                     status: 'error',
@@ -44,26 +47,26 @@ function ProjSettings() {
                 return
             }
             const ind = users.findIndex((item)=> {
-                return item.id === member.id
+                return item.userId === member.userId
             })
             setRemainingUsers([...remainingUsers,users[ind]])
             let newArr = [...users]
             newArr.splice(ind,1)
             setUsers(newArr)
             setProject({...project,users:users.map((item)=>{
-                return item.id
+                return item.userId
             })})
         }
         else {
             const ind = remainingUsers.findIndex((item)=> {
-                return item.id === member.id
+                return item.userId === member.userId
             })
             setUsers([...users,remainingUsers[ind]])
             let newArr = [...remainingUsers]
             newArr.splice(ind,1)
             setRemainingUsers(newArr)
             setProject({...project,users:users.map((item)=>{
-                return item.id
+                return item.userId
             })})
         }
     }
@@ -297,7 +300,7 @@ function ProjSettings() {
                                             }}
                                             onClick={()=>handleMemberChange('add',user)}
                                         >
-                                            <UserCard user={user} type={'menuItem'} key={user.id} backgroundColor={'transparent'} />
+                                            <UserCard user={user} type={'menuItem'} key={user.userId} backgroundColor={'transparent'} />
                                         </MenuItem>
                                     )
                                 })
@@ -310,9 +313,10 @@ function ProjSettings() {
                 mt='1.5rem'
                 onClick={()=> {
                     dispatch(changeProjectInfo({
-                        id: project.id,
+                        projectId: project.projectId,
                         value: project,
-                        users: users
+                        users: users,
+                        stompClient: stompClient
                     }))
                     toast({
                         title: 'Changes saved successfully',
