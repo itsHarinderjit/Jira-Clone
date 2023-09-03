@@ -4,6 +4,7 @@ import { Users } from "../res/data"
 export const changeCurrentUser = createAsyncThunk('data/changeCurrentUser',
     async ({selectedUser,stompClient},{dispatch}) => {
         dispatch(changeLoading())
+        localStorage.setItem("jiraUser",selectedUser)
         stompClient.subscribe(`/topic/${selectedUser.name}`,message => {
             const data = JSON.parse(message.body)
             dispatch(changeUserLocal(data))
@@ -15,7 +16,17 @@ export const changeCurrentUser = createAsyncThunk('data/changeCurrentUser',
                 projs = data.body.projects
             for(let x in projs) {
                 stompClient.subscribe(`/topic/project/${projs[x].projectId}`,message=> {
-                    // dispatch(changeProjectInfoLocal(JSON.parse(message.body).body)) // commented for now
+                    let data = JSON.parse(message.body).body
+                    if(data.projectId !== undefined && data.taskId !== undefined && data.commentId !== undefined) 
+                        dispatch(deleteCommentLocal(data))
+                    else if(data.projectId !== undefined && data.taskId !== undefined && data.comment !== undefined)
+                        dispatch(updateCommentLocal(data))
+                    else if(data.projectId !== undefined && data.taskId!== undefined)
+                        dispatch(deleteIssueLocal(data))
+                    else if(data.projectId !== undefined)
+                        dispatch(changeProjectInfoLocal(JSON.parse(message.body).body))
+                    else if(data.taskId !== undefined)
+                        dispatch(updateTaskLocal(data))
                 })
             }
         })
@@ -52,40 +63,76 @@ export const changeProjectInfo = createAsyncThunk('data/changeProjectInfo',
 
 export const addProject = createAsyncThunk('data/addProject',
         async ({project,stompClient,userName}) => {
-            console.log(project)
-            console.log(userName)
             let sendData = {...project}
             sendData.tasks = []
-            console.log(stompClient)
             stompClient.publish({
                 destination: `/jira/user/newProject/${userName}`,
                 body : JSON.stringify(sendData)
             })
-            console.log('Done')
         }
 )
 
-export const addIssue = createAsyncThunk('data/addIssue',
+export const updateIssue = createAsyncThunk('data/addIssue',
         async ({task,stompClient},{getState})=> {
             let sendData = {...task}
-            sendData.reporter = sendData.reporter.userId
-            let usrs = []
-            for(let x in sendData.assignees) {
-                usrs.push(sendData.assignees[x].userId)
-            }
-            sendData.assignees = usrs
-            console.log('inside thunk')
-            console.log(task)
-            console.log(stompClient)
             let state = getState().data
-            console.log('after')
-            console.log(state)
-            console.log(sendData)
-            stompClient.publish({
-                destination: `/jira/user/addTask/${state.currProject.projectId}`,
-                body: JSON.stringify(sendData)
+            delete sendData.id
+            let comments = sendData.comments
+            let newComments = comments.map((item)=>{
+                delete item.id
+                return item
             })
-            console.log('done')
+            sendData.comments = newComments
+            stompClient.publish({
+                destination: `/jira/user/updateTask/${state.currProject.projectId}`,
+                body: JSON.stringify({
+                    projectId: state.currProject.projectId,
+                    data: JSON.stringify(sendData)
+                })
+            })
+        }
+)
+
+export const deleteIssue = createAsyncThunk('data/deleteIssue',
+        async ({taskId,stompClient},{getState}) => {
+            let state = getState().data
+            stompClient.publish({
+                destination: `/jira/user/deleteTask/${state.currProject.projectId}`,
+                body : JSON.stringify({
+                    taskId: taskId,
+                    projectId: state.currProject.projectId
+                })
+            })
+        }
+)
+
+export const updateComment = createAsyncThunk('data/updateComment',
+        async ({comment,taskId,stompClient},{getState}) => {
+            let state = getState().data
+            let sendData = {...comment}
+            delete sendData.id
+            stompClient.publish({
+                destination: `/jira/user/updateComment/${state.currProject.projectId}`,
+                body: JSON.stringify({
+                    projectId: state.currProject.projectId,
+                    taskId: taskId,
+                    comment: sendData
+                })
+            })
+        }
+)
+
+export const deleteComment = createAsyncThunk('data/deleteComment',
+        async ({commentId,taskId,stompClient},{getState})=> {
+            let state = getState().data
+            stompClient.publish({
+                destination: `/jira/user/deleteComment/${state.currProject.projectId}`,
+                body: JSON.stringify({
+                    taskId: taskId,
+                    commentId: commentId,
+                    projectId: state.currProject.projectId
+                })
+            })
         }
 )
 
@@ -177,33 +224,22 @@ const slice = createSlice({
             }
             if(state.currProject.projectId === action.payload.projectId)
                 state.currProject.tasks = tsks
-            state.projects[ind].tasks = tsks // may contain error
-            // state.currProject = action.payload.value
-            // state.projectUsers = action.payload.users
-            
+            state.projects[ind].tasks = tsks // may contain error            
         },
-        addIssueLocal(state,action) {
-            let userIdArr = []
-            for(let x in action.payload.assignees) {
-                userIdArr.push(action.payload.assignees[x].userId) // may be
-            }
-            action.payload.assignees = userIdArr
-            action.payload.reporter = action.payload.reporter.userId // may be
+        updateTaskLocal(state,action) {
             state.currProject.tasks[action.payload.taskId] = action.payload // may be
             const ind = state.projects.findIndex((item)=> {
                 return item.projectId === state.currProject.projectId
             })
             state.projects[ind].tasks[action.payload.taskId] = action.payload
         },
-        // addProjectLocal(state,action) {
-        //     state.projects.push(action.payload)
-        // },
-        deleteIssue(state,action) {
-            delete state.currProject.tasks[action.payload]
+        deleteIssueLocal(state,action) {
+            if(action.payload.projectId === state.currProject.projectId)
+                delete state.currProject.tasks[action.payload.taskId]
             const ind = state.projects.findIndex((item)=> {
-                return item.projectId === state.currProject.projectId
+                return item.projectId === action.payload.projectId
             })
-            delete state.projects[ind].tasks[action.payload]
+            delete state.projects[ind].tasks[action.payload.taskId]
         },
         changeStatus(state,action) {
             state.currProject.tasks[action.payload.taskId].status = action.payload.newStatus
@@ -212,6 +248,56 @@ const slice = createSlice({
             })
             state.projects[ind].tasks[action.payload.taskId].status = action.payload.newStatus
         },
+        updateCommentLocal(state,action) {
+            console.log(action.payload)
+            let comment = JSON.parse(action.payload.comment)
+            delete comment.id
+            if(action.payload.projectId === state.currProject.projectId) {
+                console.log('inside curr')
+                console.log(state.currProject.tasks[action.payload.taskId])
+                const comm = state.currProject.tasks[action.payload.taskId].comments.filter((item)=> {
+                    return item.commentId === comment.commentId
+                })[0]
+                const ind = state.currProject.tasks[action.payload.taskId].comments.indexOf(comm)
+                if(ind === -1) {
+                    state.currProject.tasks[action.payload.taskId].comments.push(comment)
+                }
+                else {
+                    state.currProject.tasks[action.payload.taskId].comments[ind] = comment
+                }
+            }
+            console.log('outside curr')
+            const proj = state.projects.filter((item)=> {
+                return item.projectId === action.payload.projectId
+            })[0]
+            const projInd = state.projects.indexOf(proj)
+            console.log(projInd)
+            const comm = state.projects[projInd].tasks[action.payload.taskId].comments.filter((item)=> {
+                return item.commentId === comment.commentId
+            })[0]
+            const commentInd = state.projects[projInd].tasks[action.payload.taskId].comments.indexOf(comm)
+            if(commentInd === -1) {
+                state.projects[projInd].tasks[action.payload.taskId].comments.push(comment)
+            }
+            else {
+                state.projects[projInd].tasks[action.payload.taskId].comments[commentInd] = comment
+            }
+        },
+        deleteCommentLocal(state,action) {
+            if(state.currProject.projectId === action.payload.projectId) {
+                const ind = state.currProject.tasks[action.payload.taskId].comments.findIndex((item)=> {
+                    return item.commentId === action.payload.commentId
+                })
+                state.currProject.tasks[action.payload.taskId].comments.splice(ind,1)
+            }
+            const projInd = state.projects.findIndex((item)=> {
+                return item.projectId === action.payload.projectId
+            })
+            const ind = state.projects[projInd].tasks[action.payload.taskId].comments.findIndex((item)=> {
+                return item.commentId === action.payload.commentId
+            })
+            state.projects[projInd].tasks[action.payload.taskId].comments.splice(ind,1)
+        }
     },
     extraReducers : {
         [changeCurrentUser.fulfilled.type] : (state,action) => {},
@@ -220,5 +306,5 @@ const slice = createSlice({
 })
 
 
-export const { changeLoading,changeCurrentProject,changeUserLocal,changeTaskInfo,changeProjectInfoLocal,addIssueLocal,addProjectLocal,deleteIssue,changeStatus } = slice.actions
+export const { deleteCommentLocal,updateCommentLocal,changeLoading,changeCurrentProject,changeUserLocal,changeTaskInfo,changeProjectInfoLocal,updateTaskLocal,addProjectLocal,deleteIssueLocal,changeStatus } = slice.actions
 export default slice.reducer

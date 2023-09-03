@@ -1,11 +1,12 @@
 import { Box, VStack,Text, HStack, Avatar, AvatarGroup } from '@chakra-ui/react'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import TaskModel from './TaskModel'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowDown, faArrowUp, faBookmark, faBug, faSquareCheck } from '@fortawesome/free-solid-svg-icons'
 import { useDrag } from 'react-dnd'
 import { useDispatch, useSelector } from 'react-redux'
-import { changeStatus } from '../../redux/slice'
+import { updateIssue } from '../../redux/slice'
+import { stompContext } from '../../App'
 
 export function getPriorityIcon(priority) {
     if(priority === 'highest')
@@ -28,6 +29,8 @@ export function getTypeIcon(type) {
 }
 
 function TaskCard({Task,list,listNumber,setList}) {
+    // eslint-disable-next-line no-unused-vars
+    const {stompClient,setStompClient} = useContext(stompContext)
     const priorityIcon = getPriorityIcon(Task.priority)
     const typeIcon = getTypeIcon(Task.type)
     const [modelOpen,setModelOpen] = useState(false)
@@ -54,10 +57,16 @@ function TaskCard({Task,list,listNumber,setList}) {
             }
             else    
                 newStatus = "done"
-            dispatch(changeStatus({
-                taskId: Task.taskId,
-                newStatus: newStatus
+            let sendData = {...Task}
+            sendData.status = newStatus
+            dispatch(updateIssue({
+                task: sendData,
+                stompClient: stompClient
             }))
+            // dispatch(changeStatus({
+            //     taskId: Task.taskId,
+            //     newStatus: newStatus
+            // }))
             let newList = list
             let deleteArr = newList[listNumber]
             const ind = deleteArr.indexOf(Task)

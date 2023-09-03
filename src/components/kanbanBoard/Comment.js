@@ -1,8 +1,10 @@
 import { Avatar, HStack, VStack,Text, Box, Textarea } from '@chakra-ui/react'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import ButtonMod from '../ButtonMod'
 import DeletePrompt from '../DeletePrompt'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { stompContext } from '../../App'
+import { updateComment } from '../../redux/slice'
 
 export function getNumberOfDays(dateStr) {
     const newDate = new Date()
@@ -11,6 +13,9 @@ export function getNumberOfDays(dateStr) {
 }
 
 function Comment({comment,Task,setTask}) {
+  // eslint-disable-next-line no-unused-vars
+  const {stompClient,setStompClient} = useContext(stompContext)
+  const dispatch = useDispatch()
   const [inEditMode,setInEditMode] = useState(false)
   const [comm,setComm] = useState(comment)
   const [temp,setTemp] = useState(comment)
@@ -24,6 +29,7 @@ function Comment({comment,Task,setTask}) {
     component.style.height = 'auto'
     component.style.height = component.scrollHeight + 'px'
   }
+  console.log('inside func: ',comm)
   return (
     <>
       <HStack
@@ -125,14 +131,21 @@ function Comment({comment,Task,setTask}) {
                 mr={'1rem'}
                 onClick={()=>{
                   setComm({...temp})
+                  console.log("inside onClick comm: ",temp)
                   const ind = Task.comments.findIndex((item)=>{
                     return item.commentId === comment.commentId
                   })
                   let comments = Task.comments
-                  comments[ind] = comm
+                  comments[ind] = temp
+                  console.log("inside onclick comments: ",comments)
                   setTask({...Task,comments:comments})
+                  dispatch(updateComment({
+                    comment: temp,
+                    taskId: Task.taskId,
+                    stompClient: stompClient
+                  }))
                   setInEditMode(false)
-                  setComm('') // check this one
+                  // setComm('') // check this one
                   setTemp('')
                 }}
               >

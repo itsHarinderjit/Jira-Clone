@@ -7,7 +7,7 @@ import { faSquareCheck,faBug,faBookmark,faAngleDown,faPlus,faArrowUp,faArrowDown
 import UserCard from '../UserCard'
 import ButtonMod from '../ButtonMod'
 import { useDispatch, useSelector } from 'react-redux'
-import { addIssue } from '../../redux/slice'
+import { updateIssue } from '../../redux/slice'
 import uuid from 'react-uuid'
 import { stompContext } from '../../App'
 
@@ -491,8 +491,15 @@ function CreateIssue() {
                             isClosable: true,
                             position: 'top-right'
                         })
-                        dispatch(addIssue({
-                            task: Task,
+                        let sendData = {...Task}
+                        sendData.reporter = sendData.reporter.userId
+                        let usrs = []
+                        for(let x in sendData.assignees) {
+                            usrs.push(sendData.assignees[x].userId)
+                        }
+                        sendData.assignees = usrs
+                        dispatch(updateIssue({
+                            task: sendData,
                             stompClient: stompClient
                         }))
                         setTask({

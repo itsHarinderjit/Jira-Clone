@@ -1,5 +1,5 @@
 import { Box, HStack, Text, Textarea, VStack, Avatar, Button, Menu, MenuButton, MenuList, MenuItem,Input } from '@chakra-ui/react'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { getTypeIcon,getPriorityIcon } from './TaskCard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleDown, faBookmark, faBug, faClose, faPlus, faSquareCheck, faTrashCan,faArrowUp,faArrowDown } from '@fortawesome/free-solid-svg-icons'
@@ -10,8 +10,9 @@ import UserCard from '../UserCard'
 import TimeTracker from './TimeTracker'
 import TimerPrompt from './TimerPrompt'
 import { useDispatch, useSelector } from 'react-redux'
-import { changeTaskInfo } from '../../redux/slice'
+import { updateComment, updateIssue } from '../../redux/slice'
 import uuid from 'react-uuid'
+import { stompContext } from '../../App'
 
 export function getIconOption(icon,text,id,design) {
     return (
@@ -64,6 +65,8 @@ function getStatusOptions(text,index) {
 }
 
 function TaskModel({task,setModelOpen}) {
+    // eslint-disable-next-line no-unused-vars
+    const {stompClient,setStompClient} = useContext(stompContext)
     const [openDeletePrompt,setOpenDeletePrompt] = useState(false)
     const [openTimerPrompt,setOpenTimerPrompt] = useState(false)
     const [Task,setTask] = useState(task)
@@ -110,9 +113,12 @@ function TaskModel({task,setModelOpen}) {
     ]
     function handleCloseClick() {
         setModelOpen(false)
-        dispatch(changeTaskInfo({
-            taskId: Task.taskId,
-            value: {...Task}
+        let sendData = {...Task}
+        sendData.createdOn = sendData.createdOn.toString()
+        sendData.updatedOn = sendData.updatedOn.toString()
+        dispatch(updateIssue({
+            task: sendData,
+            stompClient: stompClient
         }))
     }
     function handleDeleteClick() {
@@ -140,11 +146,6 @@ function TaskModel({task,setModelOpen}) {
         return Task.reporter === user.userId
     })[0]
     const currUser = useSelector((state)=>state.data.user)
-    console.log("all : ",useSelector((state)=>state.data.projectUsers))
-    console.log("assignees : ",assignees)
-    console.log("remainingUsers : ",remainingUsers)
-    console.log("reporter : ",reporter)
-    console.log("currUser : ",currUser)
     function handleUserChange(type,user) {
         if(type === 'remove') {
             const id = user.userId
@@ -169,7 +170,6 @@ function TaskModel({task,setModelOpen}) {
             })})
         }
     }
-    // console.log(assignees)
   return (
     <Box
         zIndex={1000}
@@ -391,12 +391,19 @@ function TaskModel({task,setModelOpen}) {
                                         >
                                             <Box
                                                 onClick={()=>{
+                                                    let sendUser = {...currUser}
+                                                    delete sendUser.id
                                                     let comment = {
                                                         commentId: uuid().slice(0,8),
-                                                        user: currUser,
+                                                        user: sendUser,
                                                         content: commentValue,
                                                         createdOn: new Date().toString()
                                                     }
+                                                    dispatch(updateComment({
+                                                        comment: comment,
+                                                        taskId: Task.taskId,
+                                                        stompClient: stompClient
+                                                    }))
                                                     let comments = task.comments
                                                     comments.push(comment)
                                                     setTask({...Task,comments:comments})

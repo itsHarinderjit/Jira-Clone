@@ -1,10 +1,13 @@
 import { Box, HStack, Text } from '@chakra-ui/react'
-import React from 'react'
+import React,{useContext} from 'react'
 import ButtonMod from './ButtonMod'
 import { useDispatch } from 'react-redux'
-import { deleteIssue } from '../redux/slice'
+import { deleteComment, deleteIssue } from '../redux/slice'
+import { stompContext } from '../App'
 
 function DeletePrompt({type,setOpenDeletePrompt,valueId,list,setList}) {
+  // eslint-disable-next-line no-unused-vars
+  const {stompClient,setStompClient} = useContext(stompContext)
   let text = ''
   const dispatch = useDispatch()
   if(type === 'issue') {
@@ -50,9 +53,17 @@ function DeletePrompt({type,setOpenDeletePrompt,valueId,list,setList}) {
                   let comments = list.comments
                   comments.splice(valueId,1)
                   setList({...list,comments:comments})
+                  dispatch(deleteComment({
+                    commentId: valueId,
+                    taskId: list.taskId,
+                    stompClient: stompClient
+                  }))
                 }
                 else if(type === 'issue') {
-                  dispatch(deleteIssue(valueId))
+                  dispatch(deleteIssue({
+                    taskId: valueId,
+                    stompClient: stompClient
+                  }))
                 }
                 setOpenDeletePrompt(false)
               }}
