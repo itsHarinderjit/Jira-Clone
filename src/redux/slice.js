@@ -4,7 +4,7 @@ import { Users } from "../res/data"
 export const changeCurrentUser = createAsyncThunk('data/changeCurrentUser',
     async ({selectedUser,stompClient},{dispatch}) => {
         dispatch(changeLoading())
-        localStorage.setItem("jiraUser",selectedUser)
+        localStorage.setItem("jiraUser",JSON.stringify(selectedUser))
         stompClient.subscribe(`/topic/${selectedUser.name}`,message => {
             const data = JSON.parse(message.body)
             dispatch(changeUserLocal(data))
@@ -169,7 +169,7 @@ const slice = createSlice({
                 return
             }
             state.user = action.payload.body.user
-            localStorage.setItem('JiraUser',JSON.stringify(state.user))
+            // localStorage.setItem('JiraUser',JSON.stringify(state.user))
             state.projects = action.payload.body.projects
             for(let x in state.projects) {
                 let tasks = state.projects[x].tasks

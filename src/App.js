@@ -9,15 +9,19 @@ import LogInUser from "./components/LogInUser/LogInUser";
 import { Client } from "@stomp/stompjs"
 import { createContext, useEffect, useState } from "react";
 import Loading from "./components/Loading";
+import { useDispatch } from "react-redux";
+import { changeCurrentUser } from "./redux/slice";
 
 export const stompContext = createContext()
 function App() {
   const [stompClient,setStompClient] = useState(null)
+  const dispatch = useDispatch()
   useEffect(()=>{
     console.log('Starting stomp client...')
     const stompConfig = {
       connectHeaders: {},
-      brokerURL: 'ws://localhost:8080/user',
+      // brokerURL: 'ws://localhost:8080/user',
+      brokerURL: 'wss://jira-clone-api-p2td.onrender.com/user',
       debug : function(str) {
         console.log('STOMP ' + str)
       },
@@ -26,10 +30,17 @@ function App() {
         setStompClient(stompClient)
       }
     }
+    let user = localStorage.getItem("jiraUser")
     const stompClient = new Client(stompConfig)
     stompClient.activate()
+    if(user !== null) {
+      dispatch(changeCurrentUser({
+        selectedUser:user,
+        stompClient:stompClient
+      }))
+    }
     return ()=>{}
-  },[]);
+  },[dispatch]);
   return (
     <stompContext.Provider value={{stompClient,setStompClient}} >
       <DndProvider backend={HTML5Backend}>
