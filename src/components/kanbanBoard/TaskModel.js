@@ -602,7 +602,30 @@ function TaskModel({task,setModelOpen}) {
                         >
                             reporter
                         </Text>
-                        <UserCard user={reporter}/>
+                        {
+                            reporter === undefined ? (
+                                <Box
+                                    backgroundColor={'white'}
+                                    border={'none'}
+                                    fontWeight={'medium'}
+                                    color={'gray.500'}
+                                    fontSize={'0.8rem'}
+                                    height={'auto'}
+                                    float={'left'}
+                                    width={'4.4rem'}
+                                    py={'0.25rem'}
+                                    px={0}
+                                    justifyContent={'left'}
+                                    alignItems={'left'}
+                                    _hover={'none'}
+                                    _focus={'none'}
+                                >
+                                    No reporter  
+                                </Box>
+                            ) : (
+                                <UserCard user={reporter}/>
+                            )
+                        }
                         <Text
                             textTransform={'uppercase'}
                             fontWeight={'medium'}
