@@ -44,7 +44,7 @@ function SideMenu() {
             py={'0.5rem'}
             mt={'1rem'}
           >
-            <Avatar name='Rick Sanchez' src={user.userImg} size={'sm'}/>
+            <Avatar name={user.name} src={user.userImg} size={'sm'}/>
             <Text
               fontWeight={'medium'}
               fontSize={'sm'}

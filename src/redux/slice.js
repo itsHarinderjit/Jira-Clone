@@ -4,7 +4,7 @@ import { Users } from "../res/data"
 export const changeCurrentUser = createAsyncThunk('data/changeCurrentUser',
     async ({selectedUser,stompClient},{dispatch}) => {
         dispatch(changeLoading())
-        localStorage.setItem("jiraUser",JSON.stringify(selectedUser))
+        // localStorage.setItem("jiraUser",JSON.stringify(selectedUser))
         stompClient.subscribe(`/topic/${selectedUser.name}`,message => {
             const data = JSON.parse(message.body)
             dispatch(changeUserLocal(data))

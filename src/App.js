@@ -20,8 +20,8 @@ function App() {
     console.log('Starting stomp client...')
     const stompConfig = {
       connectHeaders: {},
-      // brokerURL: 'ws://localhost:8080/user',
-      brokerURL: 'wss://jira-clone-api-p2td.onrender.com/user',
+      brokerURL: 'ws://localhost:8080/user',
+      // brokerURL: 'wss://jira-clone-api-p2td.onrender.com:8080/user',
       debug : function(str) {
         console.log('STOMP ' + str)
       },
